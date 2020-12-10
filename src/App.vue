@@ -1,32 +1,58 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+<div>
+    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+			<div v-if="selectedModal == 'login'" class="modal-content">
+				<LoginModal @closeModal="closeModal"/>
+			</div>
+
+			<div v-else-if="selectedModal == 'register'" class="modal-content">
+				<RegisterModal @closeModal="closeModal"/>
+			</div>
+        </div>
     </div>
-    <router-view/>
-  </div>
+
+	<Navbar @openAuthModal="openAuthModal"/>
+
+	<router-view/>
+
+	<footer> @ 2020 by Lorem Ipsum </footer>
+</div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import LoginModal from '@/components/LoginModal.vue';
+import RegisterModal from '@/components/RegisterModal.vue';
+import Navbar from '@/components/Navbar.vue';
+import store from '@/store.js';
+
+export default {
+	components: { Navbar, LoginModal, RegisterModal},
+	data(){
+		return{
+			store,
+			selectedModal: ""
+		}
+	},
+	methods: {
+		openAuthModal(modalName){
+			this.selectedModal = modalName;
+			$('#authModal').modal('show');
+		},
+		closeModal(){
+			$('#authModal').modal('hide');
+		}
+	},
 }
+</script>
 
-#nav {
-  padding: 30px;
+<style lang="scss" scoped>
+footer{
+	padding: 1rem;
+	
+	color: white;
+	text-align: center;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+	background: $DarkGray;
 }
 </style>

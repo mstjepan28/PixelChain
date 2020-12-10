@@ -1,0 +1,50 @@
+.PageContent{
+    margin: 5rem 0;
+}
+.pageContent{
+    display: flex;
+    flex-wrap: wrap;
+
+    align-items: center;
+    justify-content: center;
+
+    & > *{
+        margin: 1rem 2rem;
+        box-shadow: none;
+    }
+}
+.optionsBar{
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    margin: 1.5rem 0;
+    padding: .5rem 0;
+
+    border-top: 1px solid $LightGray;
+    border-bottom: 1px solid $LightGray;
+
+    & > *{
+        margin: 0 1rem;
+    }
+}
+
+.sorting{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+@media only screen and (max-width: 600px) {
+	.optionsBar{
+        padding: .5rem 1rem;
+        
+        & > *{
+            margin: 0;
+        }
+    }
+    .sorting{
+        width: 90%;
+    }
+}

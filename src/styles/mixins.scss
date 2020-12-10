@@ -1,0 +1,85 @@
+/****************
+    Mixins
+****************/
+
+@import "variables.scss";
+
+@mixin inputBox{
+    border: none;
+    
+    &:focus{
+        outline: none;
+    }
+    /* -- Maknut strelice --*/
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    &[type=number] {
+        -moz-appearance: textfield;
+    }
+}
+
+@mixin profilePic{
+    height: $profilePicSize;
+    width: $profilePicSize;
+    border-radius: 100%;
+
+    align-self: center;
+}
+
+@mixin HighlightText{
+    color: white;
+
+    $shadowColor: $DetailColor;
+
+    $shadowWidht: 2px;
+    $shadowNegative: -1px;
+
+    text-shadow:
+        0px 0px 0 $shadowColor,
+        $shadowNegative $shadowNegative 0 $shadowColor,  
+        $shadowWidht $shadowNegative 0 $shadowColor,
+        $shadowNegative $shadowWidht 0 $shadowColor,
+        $shadowWidht $shadowWidht 0 $shadowColor;
+}
+
+@mixin fullscreenCover{
+    max-width: 100vw;
+    min-width: 100vw;
+
+    max-height: 100vh;
+    min-height: 100vh;
+}
+
+@mixin onFocus{
+    &:focus{
+        outline: none;
+        border-color: $DetailColor;
+    }
+}
+
+@mixin Title{
+    color: white;
+    font-weight: 900;
+    margin: 0;
+}
+
+@mixin ButtonDesign2{
+    @include onFocus;
+
+    color: white;
+    font-weight: bold;
+    
+    border-radius: 10px;
+    border: 2px solid white;
+    background: transparent;
+
+    transition: $TransitionSpeed;
+
+    &:hover, &:focus{
+        color: $LightPurple;
+        border-color: $LightPurple;
+    }
+}
