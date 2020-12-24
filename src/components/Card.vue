@@ -22,7 +22,7 @@
 
     background: $Purple;
 
-    transition: 0.3s;
+    transition: 0.15s;
 
     &:hover, &:focus{
         .userInfo{
@@ -33,7 +33,7 @@
             height: $profilePicSize + .75rem;
         }
         text-decoration: none;
-        border: 3px solid $DetailColor;
+        border: 4px solid $DetailColor;
     }
     &:focus{
         outline: none;

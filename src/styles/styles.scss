@@ -1,23 +1,25 @@
 /*
 **   1. Imports
 **   2. Global
-**   3. Colors
-**   4. Titles
-**   5. Subtitles
-**   6. Buttons
-**   7. Input
-**   8. Modals
-**   9. Media querys
-**   10. Misc.
+**   3. Misc.
 */
 
 // -----------------------------------------------------------------------
 // 1. Imports ------------------------------------------------------------
 // -----------------------------------------------------------------------
+
+// General import
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-@import "variables.scss";
-@import "mixins.scss";
+@import "Values/variables.scss";
+@import "Values/mixins.scss";
+
+// Component styles
+@import "buttons.scss";
+@import "titles.scss";
+@import "modals.scss";
+@import "input.scss";
+@import "colors.scss";
 
 // -----------------------------------------------------------------------
 // 2. Global -------------------------------------------------------------
@@ -30,7 +32,8 @@
     color: $DetailColor;
 
     *::-webkit-scrollbar{
-        height: .5em;
+        height: .5rem;
+        width: .45rem;
     }
     *::-webkit-scrollbar-track{
         border-radius: 16px;
@@ -43,151 +46,7 @@
 }
 
 // -----------------------------------------------------------------------
-// 3. Colors -------------------------------------------------------------
-// -----------------------------------------------------------------------
-.Green{
-    border-color: $Green !important;
-    &:hover{
-        color: white !important;
-        background: $Green !important;
-    }
-}
-.Red{
-    border-color: $Red !important;
-    &:hover{
-        color: white !important;
-        background: $Red !important;
-    }
-}
-.LightGray{
-    border-color: $LightGray !important;
-    &:hover{
-        background: $LightGray !important;
-    } 
-}
-
-// -----------------------------------------------------------------------
-// 4. Titles -------------------------------------------------------------
-// -----------------------------------------------------------------------
-.title{
-    @include Title;
-    font-size: 5rem;
-}
-
-.titleSM{
-    @include Title;
-    font-size: 2rem;
-}
-
-// -----------------------------------------------------------------------
-// 5. Subtitles ----------------------------------------------------------
-// -----------------------------------------------------------------------
-.subtitle{
-    color: white;
-    
-    font-weight: 100;
-    font-size: 2rem;
-
-    margin: 1rem 0;
-}
-
-// -----------------------------------------------------------------------
-// 6. Buttons ------------------------------------------------------------
-// -----------------------------------------------------------------------
-.ButtonDesign1{
-    @include onFocus;
-                        
-    color: $DetailColor;
-    
-    border: none;
-    border-bottom: 2px solid transparent;
-    background: none;
-
-    transition: color 0.2s;
-    
-    &:hover{
-      border-bottom: 2px solid $DetailColor;  
-    }
-}
-
-.ButtonDesign2L{
-    @include ButtonDesign2;
-
-    padding: .75em 1.5em;
-    margin: .5rem 1rem;
-}
-
-.ButtonDesign2S{
-    @include ButtonDesign2;
-
-    padding: .25em .75em;
-    margin: .12rem .5rem;
-}
-
-.iconButton{
-    @include ButtonDesign2;
-
-    display: flex;
-    flex-wrap: nowrap;
-
-    & > .material-icons{
-        margin-right: .5rem;
-    }
-
-    &:hover > .material-icons,
-    &:focus > .material-icons{
-        color: $LightPurple
-    }
-}
-
-
-// -----------------------------------------------------------------------
-// 7. Input --------------------------------------------------------------
-// -----------------------------------------------------------------------
-.inputBox{
-    @include inputBox;
-    color: $DetailColor;
-    
-    border-bottom: 2px solid $DetailColor;
-
-    background: transparent;
-    
-    &:hover, &:focus{
-        color: $LightPurple;
-        border-color: $LightPurple;
-    }
-}
-
-// -----------------------------------------------------------------------
-// 8. Modals -------------------------------------------------------------
-// -----------------------------------------------------------------------
-.modal-content{
-	color: $DetailColor;
-	background: $DarkGray
-}
-
-// -----------------------------------------------------------------------
-// 9. Media querys -------------------------------------------------------
-// -----------------------------------------------------------------------
-@media only screen and (max-width: 600px) {
-	.title{
-        font-size: 4rem;
-    }
-    .subtitle{
-        font-size: 1rem;
-    }
-}
-@media only screen and (max-width: 400px) {
-	.title{
-        font-size: 3.5rem;
-    }
-    .subtitle{
-        font-size: 1rem;
-    }
-}
-
-// -----------------------------------------------------------------------
-// 10. Misc. -------------------------------------------------------------
+// 3. Misc. -------------------------------------------------------------
 // -----------------------------------------------------------------------
 .PurpleLine{
 	width: 50%;

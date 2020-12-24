@@ -1,5 +1,7 @@
 <template>
 <div class="home">
+	<ImageModal @closePopup="closePopup" :info="selectedImage"/>
+
 	<HeaderCarousel :info="headerInfo"/>
 	
 	<div class="section">
@@ -15,7 +17,7 @@
 	<div class="section">
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Images', text:placeholderText}"/><hr class="PurpleLine"/>
 		<div class="sectionContent">
-			<img class="previewImage" :key="imgUrl" :src="imgUrl" v-for="imgUrl in previewImages"/>
+			<img class="previewImage" @click="openPopup(img)" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"/>
 		</div>
 	</div>
 </div>
@@ -26,6 +28,7 @@ import HeaderCarousel from '../components/HeaderCarousel.vue';
 import InfoBox from '@/components/InfoBox';
 import Card from '@/components/Card';
 import User from '@/components/User';
+import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
 import testData from '@/TestData.js';
@@ -35,13 +38,15 @@ export default {
 		HeaderCarousel,
 		InfoBox,
 		User,
-		Card
+		Card,
+		ImageModal
 	},
 
 	data(){
 		return{
 			store,
-			previewImages: false,
+			imageList: false,
+			selectedImage: false,
 
 			users: testData.users,
 			headerInfo: testData.headerProps,
@@ -49,10 +54,36 @@ export default {
 		}
 	},
 	methods:{
+		openPopup(img){
+			this.selectedImage = img;
+		},
+		closePopup(){
+			this.selectedImage = false;
+		}
+	},
+	watch:{
+		selectedImage(){
+			// Dohvati popup element
+			let popupStyle = document.getElementById("imagePopup").style;
 
+			// Provjeri ako je odabrana slika
+			//	ako je zaustavi scroll i prikazi popup
+			//	ako nije, omoguci scrollanje i sakri popup
+			if(this.selectedImage){
+				document.documentElement.style.overflow = 'hidden'
+				popupStyle.display = 'flex'
+			}
+			else{
+				document.documentElement.style.overflow = 'auto'
+				popupStyle.display = 'none';
+			}
+		}
 	},
 	mounted(){
-		this.previewImages = testData.getImgUrls().slice(0,3)
+		testData.generateTestImages();
+		this.imageList = testData.images.slice(0,3);
+
+		//this.selectedImage = this.imageList[0]
 	},
 	name: 'Home'
 }

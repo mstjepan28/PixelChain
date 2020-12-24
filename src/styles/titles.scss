@@ -1,0 +1,38 @@
+@import "Values/variables.scss";
+@import "Values/mixins.scss";
+
+.title{
+    @include Title;
+    font-size: 5rem;
+}
+
+.titleSM{
+    @include Title;
+    font-size: 2rem;
+}
+
+.subtitle{
+    color: white;
+    
+    font-weight: 100;
+    font-size: 2rem;
+
+    margin: 1rem 0;
+}
+
+@media only screen and (max-width: 600px) {
+	.title{
+        font-size: 4rem;
+    }
+    .subtitle{
+        font-size: 1rem;
+    }
+}
+@media only screen and (max-width: 400px) {
+	.title{
+        font-size: 3.5rem;
+    }
+    .subtitle{
+        font-size: 1rem;
+    }
+}

@@ -34,13 +34,6 @@ export default {
     transition: 0.3s;
 
     &:hover, &:focus{
-        .userInfo{
-            font-size: 30px;
-        }
-        .profilePic{
-            width: $profilePicSize + .75rem;
-            height: $profilePicSize + .75rem;
-        }
         text-decoration: none;
     }
     &:focus{

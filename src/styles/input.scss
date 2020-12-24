@@ -1,0 +1,16 @@
+@import "Values/variables.scss";
+@import "Values/mixins.scss";
+
+.inputBox{
+    @include inputBox;
+    color: $DetailColor;
+    
+    border-bottom: 2px solid $DetailColor;
+
+    background: transparent;
+    
+    &:hover, &:focus{
+        color: $LightPurple;
+        border-color: $LightPurple;
+    }
+}

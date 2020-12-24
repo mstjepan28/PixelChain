@@ -82,19 +82,66 @@ users : [
     },
 ],
 
-
-getImgUrls(){
-    let imageList = [];
-    for(let i = 0; i < 11; i++){
-        const max = 400;
-        const min = 300;
-
-        const width = Math.round(Math.random() * (max - min) + min);
-        const height =  Math.round(Math.random() * (max - min) + min);
-        
-        imageList.push( 'https://source.unsplash.com/random/' + width + '+' + height );
+images: [
+    /*
+    {
+        imgSrc: "",
+        author: "",
+        views: "",
+        timestamp: "",
+        comments: [
+            {
+                text: "",
+                author: "",
+                timestamp: ""
+            }
+        ]
     }
+    */
+],
+
+generateTestImages(){
+    let testImages = [];
+    for(let i = 0; i < 15; i++){
+        const newImage = {}
+
+        newImage.imgSrc = this.getImgUrl();
+        newImage.author = "John Smith";
+        newImage.description = this.placeholderText.split(" ").slice(0, 5).join(" ");
+        newImage.views = Math.round(Math.random() * 100);
+        newImage.timestamp = Date.now();
+        newImage.comments = this.getComments();
+        
+        testImages.push(newImage)
+    }
+
+    this.images = testImages;
+},
+
+getComments(){
+    const nComments = Math.round(Math.random() * (10 - 1) + 1);
+    let comments = []
+
+    for(let i = 0; i < nComments; i++){
+        const newComment = {};
+
+        newComment.text = this.placeholderText.split(" ").slice(0, 10).join(" ");
+        newComment.author = "Smith John";
+        newComment.timestamp = Date.now();
+
+        comments.push(newComment);
+    }
+
+    return comments;
+},
+
+getImgUrl(){
+    const max = 400;
+    const min = 300;
+
+    const width = Math.round(Math.random() * (max - min) + min);
+    const height =  Math.round(Math.random() * (max - min) + min);
     
-    return imageList;
+    return 'https://source.unsplash.com/random/' + width + '+' + height;
 },
 }

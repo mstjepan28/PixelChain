@@ -23,9 +23,10 @@
             </li>
         </ul>
 
+        
+        
         <span v-if="!auth" class="navbar-text">
-            <button class="ButtonDesign1" @click="openAuthModal('login')"> Login </button>
-            <button class="ButtonDesign1" @click="openAuthModal('register')"> Register </button>
+            <button class="Orange ButtonDesign2S" @click="login"> Login with Metamask </button >
         </span>
         <span v-else class="navbar-text">
             <router-link to="/CurrentUser" class="ButtonDesign1">{{testUser.name}}</router-link>
@@ -48,12 +49,12 @@ export default {
 
     },
     methods:{
+        login(){
+            this.auth = !this.auth;
+        },
         logout(){
             this.auth = !this.auth;
             console.log("Logout user");
-        },
-        openAuthModal(modalName){
-            this.$emit('openAuthModal', modalName)
         },
         isCurRoute(route){
             return this.$route.path == route
@@ -63,6 +64,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.navbar-text{
+    padding: 0;
+}
+
 a:hover{
     text-decoration: none;
 }

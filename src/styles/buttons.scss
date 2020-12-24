@@ -1,0 +1,48 @@
+@import "Values/variables.scss";
+@import "Values/mixins.scss";
+
+.ButtonDesign1{
+    @include onFocus;
+                        
+    color: $DetailColor;
+    
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+
+    transition: color 0.2s;
+    
+    &:hover{
+      border-bottom: 2px solid $DetailColor;  
+    }
+}
+
+.ButtonDesign2L{
+    @include ButtonDesign2;
+
+    padding: .75em 1.5em;
+    margin: .5rem 1rem;
+}
+
+.ButtonDesign2S{
+    @include ButtonDesign2;
+
+    padding: .25em .75em;
+    margin: .12rem .5rem;
+}
+
+.iconButton{
+    @include ButtonDesign2;
+
+    display: flex;
+    flex-wrap: nowrap;
+
+    & > .material-icons{
+        margin-right: .5rem;
+    }
+
+    &:hover > .material-icons,
+    &:focus > .material-icons{
+        color: $LightPurple
+    }
+}

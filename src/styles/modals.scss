@@ -1,0 +1,7 @@
+@import "Values/variables.scss";
+@import "Values/mixins.scss";
+
+.modal-content{
+	color: $DetailColor;
+	background: $DarkGray
+}

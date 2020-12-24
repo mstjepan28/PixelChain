@@ -1,0 +1,35 @@
+@import "Values/variables.scss";
+@import "Values/mixins.scss";
+
+.Green{
+    border-color: $Green !important;
+    &:hover{
+        color: white !important;
+        background: $Green !important;
+    }
+}
+.Red{
+    border-color: $Red !important;
+    &:hover{
+        color: white !important;
+        background: $Red !important;
+    }
+}
+.LightGray{
+    border-color: $LightGray !important;
+    &:hover{
+        background: $LightGray !important;
+    } 
+}
+.Orange{
+    border-color: $Orange !important;
+    &:hover{
+        background: $Orange !important;
+    } 
+}
+.LightPurple{
+    border-color: $LightPurple !important;
+    &:hover{
+        background: $LightPurple !important;
+    } 
+}
