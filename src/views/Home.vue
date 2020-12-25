@@ -117,6 +117,8 @@ export default {
 	min-height: 80%;
 	max-height: 80%;
 	width: 30%;
+
+	cursor: pointer;
 }
 
 @media only screen and (max-width: 600px) {

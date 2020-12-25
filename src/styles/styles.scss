@@ -30,19 +30,6 @@
     box-sizing: border-box;
 
     color: $DetailColor;
-
-    *::-webkit-scrollbar{
-        height: .5rem;
-        width: .45rem;
-    }
-    *::-webkit-scrollbar-track{
-        border-radius: 16px;
-        background: $Purple
-    }
-    *::-webkit-scrollbar-thumb{
-        border-radius: 16px;
-        background: $DetailColor
-    }
 }
 
 // -----------------------------------------------------------------------

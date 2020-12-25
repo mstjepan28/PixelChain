@@ -66,6 +66,12 @@
     margin: 0;
 }
 
+@mixin RemoveDefaultButton{
+    outline: none;
+    border: none;
+    background: transparent;
+}
+
 @mixin ButtonDesign2{
     @include onFocus;
 
