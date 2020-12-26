@@ -25,6 +25,16 @@ Vue.use(VueRouter)
     name: 'AboutUs',
     component: () => import('../views/AboutUs.vue')
   },
+  {
+    path: '/SubmitReport/:id',
+    name: 'SubmitReport',
+    component: () => import('../views/SubmitReport.vue')
+  },
+  {
+    path: '/ReviewReport/:id',
+    name: 'ReviewReport',
+    component: () => import('../views/ReviewReport.vue')
+  },
 ]
 
 const router = new VueRouter({

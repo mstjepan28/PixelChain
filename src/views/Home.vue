@@ -56,27 +56,17 @@ export default {
 	methods:{
 		openPopup(img){
 			this.selectedImage = img;
-		},
-		closePopup(){
-			this.selectedImage = false;
-		}
-	},
-	watch:{
-		selectedImage(){
-			// Dohvati popup element
+
 			let popupStyle = document.getElementById("imagePopup").style;
 
-			// Provjeri ako je odabrana slika
-			//	ako je zaustavi scroll i prikazi popup
-			//	ako nije, omoguci scrollanje i sakri popup
-			if(this.selectedImage){
-				document.documentElement.style.overflow = 'hidden'
-				popupStyle.display = 'flex'
-			}
-			else{
-				document.documentElement.style.overflow = 'auto'
-				popupStyle.display = 'none';
-			}
+			document.documentElement.style.overflow = 'hidden'
+			popupStyle.display = 'flex'
+		},
+		closePopup(){
+			let popupStyle = document.getElementById("imagePopup").style;
+
+			document.documentElement.style.overflow = 'auto'
+			popupStyle.display = 'none';
 		}
 	},
 	mounted(){

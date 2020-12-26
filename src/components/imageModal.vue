@@ -32,8 +32,8 @@
             </div>
 
             <div class="reportOptions">
-                <button>Report this image</button>
-                <button>View the reports</button>
+                <button @click="reportImage">Report this image</button>
+                <button @click="viewReport">View the reports</button>
             </div>
         </div>
     </div>
@@ -68,13 +68,17 @@ export default {
             });
             return comments;
         },
+        reportImage(){
+            this.$emit('closePopup');
+            this.$router.push({ name: 'SubmitReport', params: { id: '123' } })
+        },
+        viewReport(){
+            this.$emit('closePopup');
+            this.$router.push({ name: 'ReviewReport', params: { id: '456' } })
+        },
         hidePopup(){
-            this.$emit('closePopup')
+            this.$emit('closePopup');
         }
-    },
-    mounted(){
-
-        //this.convertTimeStamp();
     },
     watch:{
         info(){

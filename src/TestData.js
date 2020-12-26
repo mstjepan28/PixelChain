@@ -112,7 +112,7 @@ generateTestImages(){
         newImage.timestamp = Date.now();
         newImage.comments = this.getComments();
         
-        testImages.push(newImage)
+        testImages.push(newImage);
     }
 
     this.images = testImages;
