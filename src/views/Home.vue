@@ -8,9 +8,7 @@
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Artists', text:placeholderText}"/><hr class="PurpleLine"/>
 		
 		<div class="sectionContent">
-			<Card :key="card.id" v-for="card in users.slice(0,3)">
-				<User :info="card"/>
-			</Card>
+			<UserCard :key="card.id" :info="card" v-for="card in users.slice(0,3)"/>
 		</div>
 	</div>
 	
@@ -26,8 +24,7 @@
 <script>
 import HeaderCarousel from '../components/HeaderCarousel.vue';
 import InfoBox from '@/components/InfoBox';
-import Card from '@/components/Card';
-import User from '@/components/User';
+import UserCard from '@/components/UserCard';
 import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
@@ -37,8 +34,7 @@ export default {
 	components: {
 		HeaderCarousel,
 		InfoBox,
-		User,
-		Card,
+		UserCard,
 		ImageModal
 	},
 

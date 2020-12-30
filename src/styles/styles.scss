@@ -40,6 +40,11 @@
 	border: 2px solid $LightPurple;
 	background: $LightPurple;
 }
+@media only screen and (max-width: 600px){
+    .PurpleLine{
+        width: 95%;
+    }
+}
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;

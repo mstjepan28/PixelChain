@@ -85,6 +85,7 @@ users : [
 images: [
     /*
     {
+        id: "",
         imgSrc: "",
         author: "",
         views: "",
@@ -105,6 +106,7 @@ generateTestImages(){
     for(let i = 0; i < 15; i++){
         const newImage = {}
 
+        newImage.id = Date.now() + "" + Math.round(Math.random() * 1000);
         newImage.imgSrc = this.getImgUrl();
         newImage.author = "John Smith";
         newImage.description = this.placeholderText.split(" ").slice(0, 5).join(" ");

@@ -21,4 +21,12 @@ export default {
 	text-align: center;
 	margin: 0 20%;
 }
+@media only screen and (max-width: 600px){
+    .textBox{
+        margin: 5%;
+    }
+    p{
+        font-size: 15px;
+    }
+}
 </style>

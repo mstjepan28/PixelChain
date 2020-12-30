@@ -22,9 +22,7 @@
     </div>
 
     <div class="container pageContent">
-        <Card :key="card.id" v-for="card in users">
-            <User :info="card"/>
-        </Card>
+        <UserCard :key="card.id" :info="card" v-for="card in users"/>
     </div>
 </div>
 </template>
@@ -32,8 +30,7 @@
 <script>
 import InfoBox from '@/components/InfoBox';
 import Sorting from '@/components/Sorting';
-import Card from '@/components/Card';
-import User from '@/components/User';
+import UserCard from '@/components/UserCard';
 
 import testData from '@/TestData.js';
 
@@ -41,8 +38,7 @@ export default {
     components:{
         InfoBox,
         Sorting,
-        Card,
-        User,
+        UserCard
     },
     data(){
         return{

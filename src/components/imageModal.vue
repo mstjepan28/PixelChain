@@ -27,7 +27,7 @@
             <hr class="LightPurple">
 
             <div class="newComment">
-               <textarea v-model="newComment" placeholder="New comment..."></textarea>
+               <textarea v-model="newComment" class="inputText" placeholder="New comment..."></textarea>
                 <button>Post</button>
             </div>
 
@@ -47,6 +47,7 @@ import moment from 'moment'
 export default {
     props: {
         info: {
+            id: {type: String, required: true},
             imgSrc: {type: String, required: true},
             author: {type: String, required: true},
             views: {type: Number, required: true},
@@ -70,11 +71,11 @@ export default {
         },
         reportImage(){
             this.$emit('closePopup');
-            this.$router.push({ name: 'SubmitReport', params: { id: '123' } })
+            this.$router.push({ name: 'SubmitReport', params: { id: this.info.id } })
         },
         viewReport(){
             this.$emit('closePopup');
-            this.$router.push({ name: 'ReviewReport', params: { id: '456' } })
+            this.$router.push({ name: 'ReviewReport', params: { id: this.info.id  } })
         },
         hidePopup(){
             this.$emit('closePopup');
@@ -175,22 +176,6 @@ export default {
     border-radius: 5px;
     border: 2px solid $LightPurple;
 
-    textarea{
-        width: 100%;
-
-        display: flex;
-        align-self: flex-end;
-
-        padding: .25rem .5rem;
-        resize: none;
-
-        border: none;
-        background: transparent;
-
-        &:hover, &:focus{
-            outline: none;
-        }
-    }
     button{
         @include RemoveDefaultButton;
 
