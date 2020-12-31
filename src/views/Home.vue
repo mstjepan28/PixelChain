@@ -14,6 +14,7 @@
 	
 	<div class="section">
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Images', text:placeholderText}"/><hr class="PurpleLine"/>
+		
 		<div class="sectionContent">
 			<img class="previewImage" @click="openPopup(img)" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"/>
 		</div>
@@ -40,16 +41,17 @@ export default {
 
 	data(){
 		return{
-			store,
 			imageList: false,
 			selectedImage: false,
 
+			headerInfo: store.headerProps,
+
 			users: testData.users,
-			headerInfo: testData.headerProps,
 			placeholderText: testData.placeholderText
 		}
 	},
 	methods:{
+		// Popup ----------------------------------------------------------------------------------
 		openPopup(img){
 			this.selectedImage = img;
 
@@ -63,15 +65,27 @@ export default {
 
 			document.documentElement.style.overflow = 'auto'
 			popupStyle.display = 'none';
+		},
+
+		// Images ---------------------------------------------------------------------------------
+		getImages(){
+			const images = testData.images;
+
+			store.imageList = images;
+			this.imageList = images.slice(0,3);
+		},
+		getUsers(){
+			const users = testData.users;
+
+			store.userList = users;
+			this.users = users;
 		}
 	},
 	mounted(){
-		testData.generateTestImages();
-		this.imageList = testData.images.slice(0,3);
-
-		//this.selectedImage = this.imageList[0]
-	},
-	name: 'Home'
+		testData.generateTestData();
+		this.getImages();
+		this.getUsers();
+	}
 }
 </script>
 

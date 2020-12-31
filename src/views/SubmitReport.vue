@@ -9,29 +9,25 @@
     </div> <hr class="PurpleLine"/>
 
     <div v-if="reportedImage" class="imageContainer">
-        <div class="reportedImg mb-5">
+        <div class="reportedImg">
             <img :src="reportedImage.imgSrc" alt="">
         </div>
 
-        <div v-if="!selectedImage" class="reportedImg">
+        <div v-if="selectedImage" class="reportedImg">
             <div class="removeImageBtn" @click="removeSelectedImage"> <span class="material-icons"> close </span></div>
             <img :src="selectedImage.imgSrc" alt="">
         </div>
         
-        <div v-else class="reportedImg">
-            <div class="selectImage">
-                <h3>Select image:</h3>
-
-                <div class="selectPreview" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"> 
-                    <img :src="img.imgSrc">
-                </div>
+        <div v-else class="reportedImg" style="overflow: auto">
+            <div class="selectPreview" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"> 
+                <img :src="img.imgSrc" @click="selectedImage = img">
             </div>
         </div>
     </div> <hr class="PurpleLine"/>
 
     <div class="buttonContainer">
         <button class="ButtonDesign2S Red" @click="cancelReport"> Cancel </button>
-        <button class="ButtonDesign2S LightPurple"> Submit report</button>
+        <button class="ButtonDesign2S LightPurple"> Submit report </button>
     </div> <hr class="PurpleLine"/>
 </div>
 </template>
@@ -42,7 +38,7 @@ import testData from '@/TestData.js';
 import InfoBox from '../components/InfoBox.vue';
 
 export default{
-  components: { InfoBox },
+    components: { InfoBox },
     data(){
         return{
             id: this.$route.params.id,
@@ -95,6 +91,8 @@ export default{
     
     display: flex;
     justify-content: space-evenly;
+
+    align-items: center;
 }
 
 .reportedImg{
@@ -103,7 +101,7 @@ export default{
     
     position: relative;
 
-    overflow: auto;
+    overflow: hidden;
 
     img{
         width: 100%;
@@ -168,6 +166,10 @@ export default{
     }
 }
 
+.selectPreview{
+    height: 25%;
+}
+
 @media only screen and (max-width: 600px) {
     .reportDescription{
         textarea{
@@ -182,6 +184,7 @@ export default{
     }
     .reportedImg{
         width: 95%;
+        margin-bottom: 2rem;
     }
 }
 </style>

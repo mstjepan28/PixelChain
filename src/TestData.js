@@ -1,26 +1,16 @@
-export default{
-    placeholderText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis congue arcu a faucibus sagittis. Nulla sed pretium dolor. Nullam eget iaculis lectus, ac pulvinar ligula. Nulla eros neque, rhoncus vel scelerisque a, rutrum quis odio. Ut in placerat lectus, eget rutrum augue. Integer scelerisque nibh vel diam malesuada, ac cursus diam venenatis. Sed dignissim mollis quam vel eleifend. Maecenas porta commodo aliquam. Ut blandit fermentum metus sit amet pellentesque.",
-    
-    headerProps: {
-    title: { text: "PixelChain", class: "title" },
-    subtitle: { text: "Blockchain digital art marketplace", class: "subtitle" },
+import moment from 'moment';
 
-    buttons: [
-        /*
-        {
-            text: 'Prvi gumb',
-            class: "ButtonDesign2S",
-            btnFunction: () => { console.log(1) },
-        },
-        */
-    ],
-    carouselImages: [
-        'https://images.unsplash.com/photo-1495954222046-2c427ecb546d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80',
-        'https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80',
-        'https://images.unsplash.com/photo-1555397430-57791c75748a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80',
-        'https://images.unsplash.com/photo-1534076355207-1717511180ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
-    ]				
+export default{
+// ------------------------------------------------------------------------------------------------
+// MAIN -------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+generateTestData(){
+    this.generateImages();
+    this.generateReports();
 },
+placeholderText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis congue arcu a faucibus sagittis. Nulla sed pretium dolor. Nullam eget iaculis lectus, ac pulvinar ligula. Nulla eros neque, rhoncus vel scelerisque a, rutrum quis odio. Ut in placerat lectus, eget rutrum augue. Integer scelerisque nibh vel diam malesuada, ac cursus diam venenatis. Sed dignissim mollis quam vel eleifend. Maecenas porta commodo aliquam. Ut blandit fermentum metus sit amet pellentesque.",
+    
+
 
 users : [
     {
@@ -82,6 +72,9 @@ users : [
     },
 ],
 
+// ------------------------------------------------------------------------------------------------
+// Generate Images --------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 images: [
     /*
     {
@@ -101,49 +94,99 @@ images: [
     */
 ],
 
-generateTestImages(){
-    let testImages = [];
-    for(let i = 0; i < 15; i++){
-        const newImage = {}
-
-        newImage.id = Date.now() + "" + Math.round(Math.random() * 1000);
-        newImage.imgSrc = this.getImgUrl();
-        newImage.author = "John Smith";
-        newImage.description = this.placeholderText.split(" ").slice(0, 5).join(" ");
-        newImage.views = Math.round(Math.random() * 100);
-        newImage.timestamp = Date.now();
-        newImage.comments = this.getComments();
-        
-        testImages.push(newImage);
-    }
-
-    this.images = testImages;
+generateImages(){
+    let images = new Array(15).fill(0);
+    this.images = images.map(() => this.getImage());
 },
 
-getComments(){
-    const nComments = Math.round(Math.random() * (10 - 1) + 1);
-    let comments = []
+getImage(){
+    let newImage = {};
 
-    for(let i = 0; i < nComments; i++){
-        const newComment = {};
+    newImage.id = this.getRandId();
+    newImage.imgSrc = 'https://source.unsplash.com/random/' + this.getRandNum(300, 400) + '+' + this.getRandNum(300, 400);
+    newImage.author = 'John Smith',
+    newImage.description = this.placeholderText.split(" ").slice(0, 5).join(" ");
+    newImage.views = this.getRandNum(0, 100);
+    newImage.timestamp = Date.now();
+    newImage.comments = this.generateComments();
 
-        newComment.text = this.placeholderText.split(" ").slice(0, 10).join(" ");
-        newComment.author = "Smith John";
-        newComment.timestamp = Date.now();
-
-        comments.push(newComment);
-    }
-
-    return comments;
+    return newImage;
 },
 
-getImgUrl(){
-    const max = 400;
-    const min = 300;
+// ------------------------------------------------------------------------------------------------
+// Generate comments ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+generateComments(){
+    let comments = new Array(this.getRandNum(1, 10)).fill(0);
+    return comments.map(() => this.getComment())
+},
+getComment(){
+    const text = this.placeholderText;
 
-    const width = Math.round(Math.random() * (max - min) + min);
-    const height =  Math.round(Math.random() * (max - min) + min);
+    return {
+        text: text.split(" ").slice(0, 10).join(" "),
+        author: "Smith John",
+        timestamp: Date.now(),
+    }
+},
+
+
+// ------------------------------------------------------------------------------------------------
+// Generate reports -------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+reports: [
+    /*
+     {
+        id: "",
+        reportedImg: "",
+        matchingImg: "",
+        description: "",
+
+        reportedDate: "",
+        reportEndDate: "",
+
+        validReport: "",
+
+        votes: {
+            valid: 0,
+            invalid: 0
+        }
+     }
+    */
+],
+
+generateReports(){
+    let reportList = new Array(this.getRandNum(1, 10)).fill(0);
+    this.reports = reportList.map(() => this.getReport())
+},
+
+getReport(){
+    const randImg = this.getImage();
+    const valid = this.getRandNum(2, 15);
+    const invalid = this.getRandNum(2, 15);
     
-    return 'https://source.unsplash.com/random/' + width + '+' + height;
+    let newReport = {};
+
+    newReport.id = this.getRandId();
+    newReport.reportedImg = randImg;
+    newReport.matchingImg = randImg;
+    newReport.description = this.placeholderText.split(" ").slice(0, 15).join(" ");
+    newReport.reportedDate = Date.now();
+    newReport.reportEndDate = moment().add(1, 'weeks').startOf('isoWeek');
+    newReport.validReport = this.getRandNum(0, 10) > 5? true: false; 
+    newReport.votes = {valid, invalid}
+
+    return newReport;
+},
+
+
+// ------------------------------------------------------------------------------------------------
+// Misc. functions --------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+getRandNum(min, max){
+    return Math.round(Math.random() * (max - min) + min);
+},
+getRandId(){
+    return Date.now() + "" + this.getRandNum(1000, 9999);
 },
 }
