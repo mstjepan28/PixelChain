@@ -31,9 +31,9 @@ Vue.use(VueRouter)
     component: () => import('../views/SubmitReport.vue')
   },
   {
-    path: '/ReviewReport/:id',
+    path: '/ReviewReports',
     name: 'ReviewReport',
-    component: () => import('../views/ReviewReport.vue')
+    component: () => import('../views/ReviewReports.vue')
   },
 ]
 

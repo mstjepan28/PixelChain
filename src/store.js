@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default{
     imageList: null,
     userList: null,
@@ -76,4 +78,8 @@ export default{
       
       this[list] = sorter[sort_order + "_" + sort_values.type]
     },
+
+    timestampToDate(timestamp){
+      return moment(timestamp).format("LLLL");
+    }
 }

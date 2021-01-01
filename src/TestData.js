@@ -168,11 +168,11 @@ getReport(){
     let newReport = {};
 
     newReport.id = this.getRandId();
-    newReport.reportedImg = randImg;
-    newReport.matchingImg = randImg;
+    newReport.reportedImg = randImg.imgSrc;
+    newReport.matchingImg = randImg.imgSrc;
     newReport.description = this.placeholderText.split(" ").slice(0, 15).join(" ");
     newReport.reportedDate = Date.now();
-    newReport.reportEndDate = moment().add(1, 'weeks').startOf('isoWeek');
+    newReport.reportEndDate = moment().add(7, 'days').format('LLL'); 
     newReport.validReport = this.getRandNum(0, 10) > 5? true: false; 
     newReport.votes = {valid, invalid}
 

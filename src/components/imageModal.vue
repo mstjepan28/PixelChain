@@ -33,7 +33,6 @@
 
             <div class="reportOptions">
                 <button @click="reportImage">Report this image</button>
-                <button @click="viewReport">View the reports</button>
             </div>
         </div>
     </div>
@@ -42,7 +41,7 @@
 
 <script>
 
-import moment from 'moment';
+import store from '@/store.js';
 
 export default {
     props: {
@@ -65,17 +64,13 @@ export default {
     methods:{
         convertCommentTimeStamps(comments){
             comments.forEach(comment => {
-                comment.timestamp = moment(comment.timestamp).format("LLLL");
+                comment.timestamp = store.timestampToDate(comment.timestamp);
             });
             return comments;
         },
         reportImage(){
             this.$emit('closePopup');
             this.$router.push({ name: 'SubmitReport', params: { id: this.info.id } })
-        },
-        viewReport(){
-            this.$emit('closePopup');
-            this.$router.push({ name: 'ReviewReport', params: { id: this.info.id  } })
         },
         hidePopup(){
             this.$emit('closePopup');
@@ -84,7 +79,7 @@ export default {
     watch:{
         info(){
             if(!this.info) return;
-            this.info.timestamp = moment(this.info.timestamp).format("LLLL");
+            this.info.timestamp = store.timestampToDate(this.info.timestamp);
             this.info.comments = this.convertCommentTimeStamps(this.info.comments);
         }
     }

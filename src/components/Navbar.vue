@@ -22,7 +22,7 @@
                 <router-link class="nav-link" to="/AboutUs" :class="{curRoute: isCurRoute('/AboutUs')}">Post image</router-link>
             </li>
             <li class="nav-item">
-                <router-link class="nav-link" to="/AboutUs" :class="{curRoute: isCurRoute('/AboutUs')}">View reports</router-link>
+                <router-link class="nav-link" to="/ReviewReports" :class="{curRoute: isCurRoute('/ReviewReports')}">View reports</router-link>
             </li>
             <li class="nav-item">
                 <router-link class="nav-link" to="/AboutUs" :class="{curRoute: isCurRoute('/AboutUs')}">About us</router-link>
