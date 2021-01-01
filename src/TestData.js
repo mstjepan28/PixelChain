@@ -5,6 +5,7 @@ export default{
 // MAIN -------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 generateTestData(){
+    console.log("Generating test data")
     this.generateImages();
     this.generateReports();
 },

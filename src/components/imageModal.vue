@@ -27,7 +27,7 @@
             <hr class="LightPurple">
 
             <div class="newComment">
-               <textarea v-model="newComment" class="inputText" placeholder="New comment..."></textarea>
+                <textarea v-model="newComment" class="inputText" placeholder="New comment..."></textarea>
                 <button>Post</button>
             </div>
 
@@ -147,6 +147,11 @@ export default {
 .imageInfo{
     width: 50%;
 
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+
     padding: 1.5rem 1rem;
     
     background: $DarkGray;
@@ -161,6 +166,11 @@ export default {
 
     .comment{
         font-size: 14px;
+
+        padding: .5rem;
+        margin-right: .5rem;
+
+        background: $Gray;
     }
 }
 
@@ -195,7 +205,7 @@ export default {
 
     justify-content: space-evenly;
 
-    margin: 1rem 0;
+    margin-top: 1rem;
 
     button{
         @include RemoveDefaultButton;
