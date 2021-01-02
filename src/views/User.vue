@@ -121,4 +121,15 @@ export default {
         margin-left: 0;
     }
 }
+@media only screen and (max-width: 700px){
+    .userInfo{
+        flex-direction: column;
+    }
+    .profilePic{
+        margin-right: 0;
+    }
+    .textInfo{
+        max-width: 90%;
+    }
+}
 </style>

@@ -29,8 +29,6 @@
             </li>
         </ul>
 
-        
-        
         <span v-if="!auth" class="navbar-text">
             <button class="Orange ButtonDesign2S" @click="login"> Login with Metamask </button >
         </span>
@@ -115,6 +113,5 @@ span > a, button{
 
         border-bottom: 1px solid $LightPurple;
     }
-
 }
 </style>
