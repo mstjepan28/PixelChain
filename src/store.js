@@ -7,7 +7,7 @@ export default{
     users: testData.users,
     reports: testData.reports,
 
-    placeholderText: testData.placeholderText.split(" ").slice(0, 50).join(" "),
+    placeholderText: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quisquam tempora provident magnam, repellendus aperiam iure sit praesentium eligendi ad excepturi qui blanditiis totam quos non, voluptate inventore quam dolores molestiae labore perspiciatis repellat, nesciunt laborum? Saepe dicta consequuntur iste magnam voluptatibus provident quod quia eligendi fugiat deleniti quis unde quas enim, recusandae illo maxime, reprehenderit obcaecati. Hic debitis",
 
     // Settings
     headerProps: {
@@ -88,19 +88,4 @@ export default{
     timestampToDate(timestamp){
       return moment(timestamp).format("LLLL");
     },
-
-    // TEST ---------------------------------------------------------------------------------------
-    dataSet: false,
-
-    getTestData(){
-      if(this.dataSet) return;
-
-      this.images = testData.images;
-      this.users = testData.users;
-      this.reports = testData.reports;
-      this.placeholderText = testData.placeholderText;
-
-      this.dataSet = true;
-      console.log("Test data set")
-    }
 }

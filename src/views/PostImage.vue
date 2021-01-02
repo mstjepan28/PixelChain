@@ -22,7 +22,7 @@
         maxFileSize="5MB"
     />
 
-    <textarea class="inputText" placeholder="Write a description for your image..." v-modal="imgDescription"></textarea>
+    <textarea class="inputText" placeholder="Write a description for your image..." v-model="imgDescription"></textarea>
 
     <div class="buttonContainer">
         <button class="ButtonDesign2S LightPurple" @click="postImage">Post</button>
@@ -72,6 +72,7 @@ export default {
                 imgSrc: file.getFileEncodeDataURL(),
                 author: "",
                 views: 0,
+                description: this.imgDescription,
                 timestamp: Date.now(),
                 comments: []
             }

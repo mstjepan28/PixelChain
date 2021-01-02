@@ -44,10 +44,12 @@
 
 <script>
 
+import store from '@/store.js';
+
 export default {
     data(){
         return{
-            auth: true,
+            auth: false,
             user: false,
         }
     },
@@ -62,6 +64,9 @@ export default {
         isCurRoute(route){
             return this.$route.path == route
         },
+    },
+    mounted(){
+        this.user = store.users[0];
     }
 }
 </script>

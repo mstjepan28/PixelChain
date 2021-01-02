@@ -8,7 +8,7 @@
 
     <div class="optionsBar">
         <input class="inputBox" type="text" v-model="searchInput" placeholder="Search...">
-        
+        <!--
         <Sorting class="sorting" @sort="sortItems">
             <div class="filterItem">
                 <input id="name" type="radio" v-model="sortValues" name="sortValues" :value="{atr: 'name', type: 'string'}"> 
@@ -19,12 +19,11 @@
                 <label for="career"> Career </label>
             </div>
         </Sorting>
-
-        <div></div>
+        -->
     </div>
     <div class="pageContent" v-if="images">
         <div class="images">
-            <img @click="openPopup(img)" :key="img.imgSrc" :src="img.imgSrc" v-for="img in images"/>
+            <img @click="openPopup(img)" :key="img.id" :src="img.imgSrc" v-for="img in images"/>
         </div>
     </div>
 </div>
@@ -32,7 +31,7 @@
 
 <script>
 import InfoBox from '@/components/InfoBox';
-import Sorting from '@/components/Sorting';
+//import Sorting from '@/components/Sorting';
 import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
@@ -40,7 +39,7 @@ import store from '@/store.js';
 export default {
     components:{
         InfoBox,
-        Sorting,
+        //Sorting,
         ImageModal,
     },
     data(){
@@ -48,9 +47,7 @@ export default {
             searchInput: '',
             Gallery: { title: "Gallery", text: store.placeholderText },
 
-            images: {
-                col3: false
-            },
+            images: false,
             selectedImage: false,
             sortValues: false
         }
@@ -80,10 +77,22 @@ export default {
 			this.getProjects();
         },
 
+        // Search ---------------------------------------------------------------------------------
+        search(keyword){
+            this.images = this.images.filter( img => Object.keys(img).some(atr => 
+                new RegExp(keyword).test(img[atr]) 
+            ))
+        },
+
         // Image setup ----------------------------------------------------------------------------
         getImages(){
             this.images = store.images;
         },
+    },
+    watch:{
+        searchInput(){ 
+            this.searchInput.length? this.search(this.searchInput): this.getImages();
+        }
     },
     mounted(){
         this.getImages();
@@ -94,8 +103,4 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/ContentPage.scss";
 @import "@/styles/imageGrid.scss";
-
-img{
-    cursor: pointer;
-}
 </style>

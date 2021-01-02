@@ -75,8 +75,6 @@ export default {
 		}
 	},
 	mounted(){
-		store.getTestData();
-		
 		this.getImages();
 		this.getUsers();
 	}

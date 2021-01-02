@@ -54,10 +54,10 @@
 @media only screen and (max-width: 400px) {
 	.optionsBar{
         padding: .5rem;
-        justify-content: initial;
+        justify-content: center;
 
         *{
-            min-width: 50%;
+            min-width: 90%;
         }
     }
 }

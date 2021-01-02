@@ -2,8 +2,11 @@
 <div class="cardBody" @click="gotoUser">
     
     <img class="profilePic" :src="info.profilePicSrc" alt="profile image"/>
-    <h3 class="userInfo"> {{info.name}} </h3>
-    <h4 class="userInfo"> {{info.occupation}} </h4>
+
+    <div class="userInfo">
+        <h3> {{info.name}} </h3>
+        <h4> {{info.occupation}} </h4>
+    </div>
     
 </div>
 </template>
@@ -62,12 +65,13 @@ export default {
 
 .profilePic{
     @include profilePic;
-    margin-bottom: 1.5rem 0;
 }
 
 .userInfo{
     color: $DetailColor;
     word-wrap: break-word;
+
+    margin: 1rem 0;
 }
 
 </style>

@@ -25,20 +25,8 @@
                         <input id="asc" type="radio" name="sort" @click="sortItems('asc')"> 
                         <label for="asc"><i class="fas fa-sort-amount-down-alt"></i> Descending </label>
                     </div>
-                </div>
-
-                <!--
-                <div class="row mr-2 ml-2">
-                    <div class="col-6">
-                        <input type="radio" name="sort" @click="sortItems('asc')"> Uzlazno
-                    </div>
-                    <div class="col-6">
-                        <input type="radio" name="sort" @click="sortItems('desc')"> Silazno
-                    </div>							
-                </div>
-                -->         
+                </div>     
             </div>
-
 
         </div>
     </div>
