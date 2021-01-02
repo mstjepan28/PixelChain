@@ -21,6 +21,11 @@ Vue.use(VueRouter)
     component: () => import('../views/Artists.vue')
   },
   {
+    path: '/User/:id',
+    name: 'User',
+    component: () => import('../views/User.vue')
+  },
+  {
     path: '/AboutUs',
     name: 'AboutUs',
     component: () => import('../views/AboutUs.vue')

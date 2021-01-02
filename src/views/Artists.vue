@@ -32,7 +32,7 @@ import InfoBox from '@/components/InfoBox';
 import Sorting from '@/components/Sorting';
 import UserCard from '@/components/UserCard';
 
-import testData from '@/TestData.js';
+import store from '@/store.js';
 
 export default {
     components:{
@@ -43,9 +43,9 @@ export default {
     data(){
         return{
             searchInput: '',
-            Artists: { title: "Artists", text: testData.placeholderText },
+            Artists: { title: "Artists", text: store.placeholderText },
 
-            users: testData.users,
+            users: false,
             sortValues: false
         }
     },
@@ -55,7 +55,13 @@ export default {
 			this.store.sort_items(this.sortValues, sortOrder, "images");
 
 			this.getProjects();
-		},
+        },
+        getUsers(){
+            this.users = store.users;
+        }
+    },
+    mounted(){
+        this.getUsers();
     }
 }
 </script>

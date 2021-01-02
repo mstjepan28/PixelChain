@@ -190,6 +190,8 @@ export default {
 
         transition: $TransitionSpeed;
 
+        background: $Gray;
+
         &:hover, &:focus{
             font-weight: bold;
             color: $LightPurple;

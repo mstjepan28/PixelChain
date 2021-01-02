@@ -12,7 +12,7 @@
 
 <script>
 
-import testData from '@/TestData.js';
+import store from '@/store.js';
 import InfoBox from '../components/InfoBox.vue';
 import ReviewReport from '@/components/reviewReportComp.vue';
 
@@ -21,14 +21,14 @@ export default {
     data(){
         return{
             id: this.$route.params.id,
-            reviewReport: {title: "Review report", text: testData.placeholderText },
+            reviewReport: {title: "Review report", text: store.placeholderText },
 
-            reports: testData.reports
+            reports: false,
         }
     },
     methods:{
         getReports(){
-            this.reports = testData.reports;
+            this.reports = store.reports;
         }
     },
     mounted(){

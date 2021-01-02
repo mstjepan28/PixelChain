@@ -1,12 +1,11 @@
 <template>
-<router-link :to="'/User/' + info.id" class="cardBody">
+<div class="cardBody" @click="gotoUser">
     
-    <img class="profilePic" src="@/assets/profile.png" alt="profile image"/>
-
+    <img class="profilePic" :src="info.profilePicSrc" alt="profile image"/>
     <h3 class="userInfo"> {{info.name}} </h3>
     <h4 class="userInfo"> {{info.occupation}} </h4>
     
-</router-link>
+</div>
 </template>
 
 <script>
@@ -18,11 +17,15 @@ export default {
             occupation: {type: String, required: true},
         }
     },
-    
-    data: () => {
+    data(){
         return{
             cardImgSrc: '@/assets/header.jpg',
             profileImgSrc: '@/assets/profile.png',
+        }
+    },
+    methods:{
+        gotoUser(){
+            this.$router.push({ name: 'User', params: { id: this.info.id } })
         }
     }
 }

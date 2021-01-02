@@ -1,9 +1,15 @@
 import moment from 'moment';
+import testData from "./testData.js"; // TEST
 
 export default{
-    imageList: null,
-    userList: null,
+    // Data 
+    images: testData.images,
+    users: testData.users,
+    reports: testData.reports,
 
+    placeholderText: testData.placeholderText.split(" ").slice(0, 50).join(" "),
+
+    // Settings
     headerProps: {
       title: { text: "PixelChain", class: "title" },
       subtitle: { text: "Blockchain digital art marketplace", class: "subtitle" },
@@ -81,5 +87,20 @@ export default{
 
     timestampToDate(timestamp){
       return moment(timestamp).format("LLLL");
+    },
+
+    // TEST ---------------------------------------------------------------------------------------
+    dataSet: false,
+
+    getTestData(){
+      if(this.dataSet) return;
+
+      this.images = testData.images;
+      this.users = testData.users;
+      this.reports = testData.reports;
+      this.placeholderText = testData.placeholderText;
+
+      this.dataSet = true;
+      console.log("Test data set")
     }
 }

@@ -34,8 +34,8 @@
         <span v-if="!auth" class="navbar-text">
             <button class="Orange ButtonDesign2S" @click="login"> Login with Metamask </button >
         </span>
-        <span v-else class="navbar-text">
-            <router-link to="/CurrentUser" class="ButtonDesign1">{{testUser.name}}</router-link>
+        <span v-else-if="auth && user" class="navbar-text">
+            <router-link to="/CurrentUser" class="ButtonDesign1">{{user.name}}</router-link>
             <button class="ButtonDesign1" @click="logout"> Log out </button>
         </span>
     </div>
@@ -43,16 +43,13 @@
 </template>
 
 <script>
-import testData from '@/TestData.js';
+
 export default {
     data(){
         return{
             auth: true,
-            testUser: testData.users[0]
+            user: false,
         }
-    },
-    computed:{
-
     },
     methods:{
         login(){
@@ -64,7 +61,7 @@ export default {
         },
         isCurRoute(route){
             return this.$route.path == route
-        }
+        },
     }
 }
 </script>

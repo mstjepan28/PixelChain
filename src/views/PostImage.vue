@@ -22,10 +22,10 @@
         maxFileSize="5MB"
     />
 
-    <textarea class="inputText" placeholder="Write a description for your image..."></textarea>
+    <textarea class="inputText" placeholder="Write a description for your image..." v-modal="imgDescription"></textarea>
 
     <div class="buttonContainer">
-        <button class="ButtonDesign2S LightPurple">Post</button>
+        <button class="ButtonDesign2S LightPurple" @click="postImage">Post</button>
     </div>
 </div>
 </template>
@@ -42,7 +42,7 @@ import FilePondPluginImageCrop from 'filepond-plugin-image-crop';
 import FilePondPluginImageTransform from 'filepond-plugin-image-transform';
 
 import InfoBox from '@/components/InfoBox';
-import testData from '@/TestData.js';
+import store from '@/store.js';
 
 // Create component
 const FilePond = vueFilePond(
@@ -58,15 +58,25 @@ export default {
     data(){
         return{
             myFiles: [],
-            PostImage: { title: "Post a new image", text: testData.placeholderText },
+            PostImage: { title: "Post a new image", text: store.placeholderText },
+
+            imgDescription: '',
         }
     },
     methods:{
-        async uploadFile(){
+        postImage(){
             const file = this.$refs.pond.getFiles()[0]
             if(!file) return;
 
-            console.log(file);
+            const newImage = {
+                imgSrc: file.getFileEncodeDataURL(),
+                author: "",
+                views: 0,
+                timestamp: Date.now(),
+                comments: []
+            }
+
+            console.log(newImage);
         },
     }
 }

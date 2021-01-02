@@ -35,7 +35,6 @@ import InfoBox from '@/components/InfoBox';
 import Sorting from '@/components/Sorting';
 import ImageModal from '@/components/imageModal';
 
-import testData from '@/TestData.js';
 import store from '@/store.js';
 
 export default {
@@ -47,7 +46,7 @@ export default {
     data(){
         return{
             searchInput: '',
-            Gallery: { title: "Gallery", text: testData.placeholderText },
+            Gallery: { title: "Gallery", text: store.placeholderText },
 
             images: {
                 col3: false
@@ -83,20 +82,10 @@ export default {
 
         // Image setup ----------------------------------------------------------------------------
         getImages(){
-            if(!store.imageList) store.imageList = testData.images;
-            this.images = store.imageList;
-            //this.splitImages(store.imageList);
+            this.images = store.images;
         },
-        splitImages(imageList){
-            const colSize = imageList.length / 3;
-
-            this.images.col1 = imageList.slice(0, colSize);
-            this.images.col2 = imageList.slice(colSize, colSize*2);
-            this.images.col3 = imageList.slice(colSize*2, );
-        }
     },
     mounted(){
-        if(!testData.images.length) testData.generateTestData();
         this.getImages();
     }
 }

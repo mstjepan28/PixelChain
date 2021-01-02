@@ -7,7 +7,7 @@
 	<div class="section">
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Artists', text:placeholderText}"/><hr class="PurpleLine"/>
 		
-		<div class="sectionContent">
+		<div v-if="users" class="sectionContent">
 			<UserCard :key="card.id" :info="card" v-for="card in users.slice(0,3)"/>
 		</div>
 	</div>
@@ -15,8 +15,8 @@
 	<div class="section">
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Images', text:placeholderText}"/><hr class="PurpleLine"/>
 		
-		<div class="sectionContent">
-			<img class="previewImage" @click="openPopup(img)" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"/>
+		<div v-if="images" class="sectionContent">
+			<img class="previewImage" @click="openPopup(img)" :key="img.imgSrc" :src="img.imgSrc" v-for="img in images"/>
 		</div>
 	</div>
 </div>
@@ -29,7 +29,6 @@ import UserCard from '@/components/UserCard';
 import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
-import testData from '@/TestData.js';
 
 export default {
 	components: {
@@ -41,13 +40,13 @@ export default {
 
 	data(){
 		return{
-			imageList: false,
+			images: false,
 			selectedImage: false,
 
 			headerInfo: store.headerProps,
 
-			users: testData.users,
-			placeholderText: testData.placeholderText
+			users: false,
+			placeholderText: store.placeholderText
 		}
 	},
 	methods:{
@@ -69,20 +68,15 @@ export default {
 
 		// Images ---------------------------------------------------------------------------------
 		getImages(){
-			const images = testData.images;
-
-			store.imageList = images;
-			this.imageList = images.slice(0,3);
+			this.images = store.images.slice(0,3);
 		},
 		getUsers(){
-			const users = testData.users;
-
-			store.userList = users;
-			this.users = users;
+			this.users = store.users.slice(0,3);
 		}
 	},
 	mounted(){
-		testData.generateTestData();
+		store.getTestData();
+		
 		this.getImages();
 		this.getUsers();
 	}

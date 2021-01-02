@@ -34,7 +34,7 @@
 
 <script>
 
-import testData from '@/TestData.js';
+import store from '@/store.js';
 import InfoBox from '../components/InfoBox.vue';
 
 export default{
@@ -42,9 +42,9 @@ export default{
     data(){
         return{
             id: this.$route.params.id,
-            submitReport: {title: "Submit a report", text: testData.placeholderText },
+            submitReport: {title: "Submit a report", text: store.placeholderText },
 
-            imageList: testData.images,
+            imageList: store.images,
 
             reportedImage: false,
             selectedImage: false,
@@ -55,8 +55,7 @@ export default{
             this.selectedImage = false;
         },
         getReportedImage(){
-            this.reportedImage = testData.images.filter(image => image.id == this.id)[0];
-            this.selectedImage = testData.images.filter(image => image.id == this.id)[0];// TEST
+            this.reportedImage = store.images.filter(image => image.id == this.id)[0];
         },
         cancelReport(){
             this.$router.push({ name: 'Home'})

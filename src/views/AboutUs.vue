@@ -14,7 +14,7 @@
 
 <script>
 import InfoBox from '@/components/InfoBox';
-import testData from '@/TestData.js';
+import store from '@/store.js';
 
 export default {
     components:{
@@ -22,9 +22,9 @@ export default {
     },
     data(){
         return{
-            AboutUs: { title: "About us", text: testData.placeholderText },
-            Artists: { title: "Artists", text: testData.placeholderText },
-            Images: { title: "Images", text: testData.placeholderText }
+            AboutUs: { title: "About us", text: store.placeholderText },
+            Artists: { title: "Artists", text: store.placeholderText },
+            Images: { title: "Images", text: store.placeholderText }
         }
     }
 }
