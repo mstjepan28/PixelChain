@@ -3,6 +3,13 @@
 ## Project setup
 ```
 npm install
+
+npm i ganache-cli
+
+install ipfs (https://docs.ipfs.io/install/command-line/#package-managers)
+
+npm install -g truffle
+
 ```
 
 ### Compiles and hot-reloads for development
