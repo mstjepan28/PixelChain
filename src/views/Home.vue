@@ -6,7 +6,6 @@
 	
 	<div class="section">
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Artists', text:placeholderText}"/><hr class="PurpleLine"/>
-		
 		<div v-if="users" class="sectionContent">
 			<UserCard :key="card.id" :info="card" v-for="card in users.slice(0,3)"/>
 		</div>

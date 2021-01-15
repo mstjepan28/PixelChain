@@ -29,11 +29,13 @@
             </li>
         </ul>
 
-        <span v-if="!auth" class="navbar-text">
+        <span v-if="!isDrizzleInitialized" class="navbar-text">
             <button class="Orange ButtonDesign2S" @click="login"> Login with Metamask </button >
         </span>
-        <span v-else-if="auth && user" class="navbar-text">
-            <router-link to="/CurrentUser" class="ButtonDesign1">{{user.name}}</router-link>
+        <span v-else-if="isDrizzleInitialized" class="navbar-text">
+            <router-link to="/CurrentUser" class="ButtonDesign1">
+                <drizzle-account units="Ether" :precision="2"/>
+            </router-link>
             <button class="ButtonDesign1" @click="logout"> Log out </button>
         </span>
     </div>
@@ -43,7 +45,7 @@
 <script>
 
 import store from '@/store.js';
-
+import {mapGetters} from 'vuex';
 export default {
     data(){
         return{
@@ -63,9 +65,12 @@ export default {
             return this.$route.path == route
         },
     },
+    computed: {
+		...mapGetters('drizzle', ['isDrizzleInitialized'])
+	},
     mounted(){
         this.user = store.users[0];
-    }
+    },
 }
 </script>
 
