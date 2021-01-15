@@ -15,20 +15,24 @@
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Images', text:placeholderText}"/><hr class="PurpleLine"/>
 		
 		<div v-if="images" class="sectionContent">
-			<img class="previewImage" @click="openPopup(img)" :key="img.imgSrc" :src="img.imgSrc" v-for="img in images"/>
+			<img class="previewImage" @click="openPopup(img)" :key="img" :src="img" v-for="img in images"/>
+		</div>
+		<div v-if="isLoading" style="margin-left: 50%;">
+			<h3><b>Loading images</b></h3>
+			<img src="../assets/loading.gif" style="width: 50px; height: 50px;"/>
 		</div>
 	</div>
 </div>
 </template>
 
 <script>
+
 import HeaderCarousel from '../components/HeaderCarousel.vue';
 import InfoBox from '@/components/InfoBox';
 import UserCard from '@/components/UserCard';
 import ImageModal from '@/components/imageModal';
-
 import store from '@/store.js';
-
+import { mapGetters } from "vuex";
 export default {
 	components: {
 		HeaderCarousel,
@@ -36,16 +40,14 @@ export default {
 		UserCard,
 		ImageModal
 	},
-
 	data(){
 		return{
-			images: false,
 			selectedImage: false,
-
+			images: store.images,
 			headerInfo: store.headerProps,
-
 			users: false,
-			placeholderText: store.placeholderText
+			isLoading: true,
+			placeholderText: store.placeholderText,
 		}
 	},
 	methods:{
@@ -68,14 +70,52 @@ export default {
 		// Images ---------------------------------------------------------------------------------
 		getImages(){
 			this.images = store.images.slice(0,3);
+			this.isLoading = store.isLoading;
 		},
 		getUsers(){
-			this.users = store.users.slice(0,3);
+			this.users = store.users.slice(0,4);
 		}
 	},
-	mounted(){
-		this.getImages();
-		this.getUsers();
+	computed: {
+        ...mapGetters("drizzle", ["drizzleInstance"]),
+    },
+	async mounted(){
+		let res;	
+		var state = this.drizzleInstance.store.getState();
+		let promises = [];
+		if(!state.drizzleStatus.initialized){
+			console.log("nije ucitano")
+			while (!state.drizzleStatus.initialized) {
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
+				state = this.drizzleInstance.store.getState();
+				console.log(state.drizzleStatus);
+				res = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
+				this.arr = res.split(",");
+				promises = this.arr.map(url => fetch(`https://gateway.ipfs.io/ipfs/${url}/`).then(y => y.text()));
+
+					/* fetch(`https://gateway.ipfs.io/ipfs/${e}/`)
+					.then(response => response.text())
+					.then(data => {
+						store.images.push(data);
+						console.log(store.images)
+					}); */
+				}
+		}else{
+			console.log("vec ucitano")
+			res = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
+			this.arr = res.split(",");
+			promises = this.arr.map(url => fetch(`https://gateway.ipfs.io/ipfs/${url}/`).then(y => y.text()));	
+		}	
+		
+		Promise.all(promises).then(results => {
+					results.forEach(r => {
+						store.images.push(r);
+						console.log("loading finished")
+						this.isLoading = false;
+						this.getImages();
+					})
+				});
 	}
 }
 </script>
@@ -116,7 +156,7 @@ export default {
 	.sectionContent{
 		flex-wrap: wrap;
 	}
-    .previewImage{
+	.previewImage{
 		width: 90%;
 		max-height: 50%;
 		min-height: 50%;
