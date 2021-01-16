@@ -86,15 +86,21 @@ export default {
       };
 
       let ipfsResponse;
-      
+      let currentString;
       var buf = Buffer.from(newImage.imgSrc, 'base64'); // Ta-da
       console.log(buf)
       ipfsResponse = await this.ipfsService.add(file.getFileEncodeDataURL()).catch(err => {
           console.log(err);
       });
-      this.cid = ipfsResponse.cid.string;
+      if(this.drizzleInstance){
+            currentString = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
+        }
+
+      if(currentString == "") this.cid = ipfsResponse.cid.string;
+      else this.cid = currentString + "," + ipfsResponse.cid.string;
+
       this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(
-        ipfsResponse.cid.string
+        this.cid
       );
       console.log(this.cid);
       console.log(newImage);

@@ -29,19 +29,16 @@
 
 	<router-view/>
 
-	<bottomNav/>
-
 	<footer> @ 2020 by Lorem Ipsum </footer>
 </div>
 </template>
 
 <script>
-import bottomNav from '@/components/BottomNavbar.vue';
 import Navbar from '@/components/Navbar.vue';
 import {mapGetters} from 'vuex';
 
 export default {
-	components: { Navbar, bottomNav },
+	components: { Navbar },
 	data(){
 		return{
 			user: {
@@ -56,16 +53,7 @@ export default {
 	methods:{
 		showUser(){
 			$('#userModal').modal('show')
-		},
-		userSetup(){
-			this.user.account = this.$store.getters['accounts/activeAccount'];
-			this.user.balance = this.$store.getters['accounts/activeBalance'];
-
-			console.log(123, this.$store.getters['accounts/activeAccount'])
 		}
-	},
-	mounted(){
-		//this.userSetup();
 	}
 }
 </script>
