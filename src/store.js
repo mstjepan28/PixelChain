@@ -1,5 +1,5 @@
 import moment from 'moment';
-import testData from "./TestData.js"; // TEST
+import testData from "./testData.js"; // TEST
 
 export default{
     // Data 

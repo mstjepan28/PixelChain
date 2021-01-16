@@ -74,7 +74,7 @@ export default {
     },
     mounted(){
         this.info.reportedDate = store.timestampToDate(this.info.reportedDate);
-        //this.info.matchingImg = store.timestampToDate(this.info.matchingImg);
+        this.info.reportEndDate = store.timestampToDate(this.info.reportEndDate);
     }
 }
 </script>

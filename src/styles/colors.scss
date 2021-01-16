@@ -33,3 +33,10 @@
         background: $LightPurple !important;
     } 
 }
+.White{
+    border-color: $DetailColor !important;
+    &:hover{
+        color: black !important;
+        background: $DetailColor !important;
+    } 
+}

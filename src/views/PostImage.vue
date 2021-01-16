@@ -65,7 +65,7 @@ export default {
       cid: "",
       ipfsService: ipfs,
 
-      imgDescription: "",
+      imgDescription: ""
     };
   },
   computed: {
@@ -98,6 +98,7 @@ export default {
       );
       console.log(this.cid);
       console.log(newImage);
+
     },
   },
 };

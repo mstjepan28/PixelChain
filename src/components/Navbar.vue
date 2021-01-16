@@ -18,10 +18,10 @@
             <li class="nav-item">
                 <router-link class="nav-link" to="/Artists" :class="{curRoute: isCurRoute('/Artists')}">Artists</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="isDrizzleInitialized">
                 <router-link class="nav-link" to="/PostImage" :class="{curRoute: isCurRoute('/PostImage')}">Post image</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="isDrizzleInitialized">
                 <router-link class="nav-link" to="/ReviewReports" :class="{curRoute: isCurRoute('/ReviewReports')}">View reports</router-link>
             </li>
             <li class="nav-item">
@@ -30,12 +30,11 @@
         </ul>
 
         <span v-if="!isDrizzleInitialized" class="navbar-text">
-            <button class="Orange ButtonDesign2S" @click="login"> Login with Metamask </button >
+            <button class="ButtonDesign2S Orange" @click="login"> Login with Metamask </button >
         </span>
+
         <span v-else-if="isDrizzleInitialized" class="navbar-text">
-            <router-link to="/CurrentUser" class="ButtonDesign1">
-                <drizzle-account units="Ether" :precision="2"/>
-            </router-link>
+            <button class="ButtonDesign2S White" @click="showCurUser"> Current User </button>
             <button class="ButtonDesign1" @click="logout"> Log out </button>
         </span>
     </div>
@@ -60,6 +59,9 @@ export default {
         logout(){
             this.auth = !this.auth;
             console.log("Logout user");
+        },
+        showCurUser(){
+            this.$emit('showUser');
         },
         isCurRoute(route){
             return this.$route.path == route
@@ -102,12 +104,12 @@ span > a, button{
 .nav-link{
     color: white;
 }
-.curUser{
-    color: $DetailColor;
-}
+
 .curRoute{
     text-decoration: underline;
 }
+
+
 @media only screen and (max-width: 991px) {
     .navbar-nav, .navbar-text{
         width: 100%;
