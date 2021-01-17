@@ -8,19 +8,8 @@
 
     <div class="optionsBar">
         <input class="inputBox" type="text" v-model="searchInput" placeholder="Search...">
-        <!--
-        <Sorting class="sorting" @sort="sortItems">
-            <div class="filterItem">
-                <input id="name" type="radio" v-model="sortValues" name="sortValues" :value="{atr: 'name', type: 'string'}"> 
-                <label for="name"> Name </label>
-            </div>
-            <div class="filterItem">
-                <input id="career" type="radio" v-model="sortValues" name="sortValues" :value="{atr: 'career', type: 'number'}">
-                <label for="career"> Career </label>
-            </div>
-        </Sorting>
-        -->
     </div>
+
     <div class="pageContent" v-if="images">
         <div class="images">
             <img @click="openPopup(img)" :key="img.id" :src="img.imgSrc" v-for="img in images"/>
@@ -31,17 +20,12 @@
 
 <script>
 import InfoBox from '@/components/InfoBox';
-//import Sorting from '@/components/Sorting';
 import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
 
 export default {
-    components:{
-        InfoBox,
-        //Sorting,
-        ImageModal,
-    },
+    components:{ InfoBox, ImageModal },
     data(){
         return{
             searchInput: '',
@@ -55,28 +39,20 @@ export default {
     methods:{
 		// Popup ----------------------------------------------------------------------------------
 		openPopup(img){
-			this.selectedImage = img;
+			this.selectedImage = img; // Odabrana slika se postavlja kao selectedImage
 
-			let popupStyle = document.getElementById("imagePopup").style;
+			let popupStyle = document.getElementById("imagePopup").style; // Dohvati stil elementa
 
-			document.documentElement.style.overflow = 'hidden'
-			popupStyle.display = 'flex'
+			document.documentElement.style.overflow = 'hidden'; // Onemoguci scroll
+			popupStyle.display = 'flex'; // Prikazi popup
 		},
 		closePopup(){
-			let popupStyle = document.getElementById("imagePopup").style;
+			let popupStyle = document.getElementById("imagePopup").style; // Dohvati stil elementa
 
-			document.documentElement.style.overflow = 'auto'
-			popupStyle.display = 'none';
-        },
+			document.documentElement.style.overflow = 'auto' // Omoguci scroll
+			popupStyle.display = 'none'; // Sakri popup
+		},
         
-        // Sorting --------------------------------------------------------------------------------
-		sortItems(sortOrder){
-			if(!this.sortValues) return;
-			this.store.sort_items(this.sortValues, sortOrder, "images");
-
-			this.getProjects();
-        },
-
         // Search ---------------------------------------------------------------------------------
         search(keyword){
             this.images = this.images.filter( img => Object.keys(img).some(atr => 
@@ -89,14 +65,17 @@ export default {
             this.images = store.images;
         },
     },
+    mounted(){
+        this.getImages();
+    },
     watch:{
         searchInput(){ 
+            // Ako se promjenio searchInput, provjeri sljedeci uvjet
+            // Ako searchInput nije prazan, proslijedi ga u funkciju search(), u suprotnome
+            // dohvati pozovi funkciju getImages() i dohvati sve slike
             this.searchInput.length? this.search(this.searchInput): this.getImages();
         }
     },
-    mounted(){
-        this.getImages();
-    }
 }
 </script>
 

@@ -8,10 +8,9 @@
         <img id="imageId" :src="info.imgSrc">
 
         <div class="imageInfo">
-            <div class="header"></div>
-
-            <div class="">
-                <h6>{{info.author + " "}} <small>{{info.timestamp}}</small></h6> 
+            <div>
+                <h6 style="overflow-wrap: break-word;">{{info.author + " "}}</h6>
+                <h6><small>{{info.timestamp}}</small> </h6>
                 <p>{{info.description}}</p>   
             </div>
             

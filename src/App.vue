@@ -11,11 +11,10 @@
 				</div>
 
 				<div class="modal-body">
-					<router-link to="/CurrentUser" class="ButtonDesign1">
+					<div v-if="user.account">
 						<p>Account: {{user.account}}</p>
-						<p>Balance: {{user.balance}}</p>
-						{{user}}
-					</router-link>
+						<p>Balance: {{user.balance + " Wei"}} </p>
+					</div>
 				</div>
 
 				<div class="modal-footer">
@@ -35,16 +34,13 @@
 
 <script>
 import Navbar from '@/components/Navbar.vue';
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
 	components: { Navbar },
 	data(){
 		return{
-			user: {
-				account: this.$store.getters['accounts/activeAccount'],
-				balance: this.$store.getters['accounts/activeBalance'],	
-			},
+			user: {},
 		}
 	},
     computed: {
@@ -53,7 +49,30 @@ export default {
 	methods:{
 		showUser(){
 			$('#userModal').modal('show')
-		}
+		},
+		async checkState(){
+			// Dohvati trenutno stanje inicijalizacije drizzle
+			let state = this.$store.getters['drizzle/isDrizzleInitialized'];
+
+			// Ako drizzle nije inicijaliziran, pricekaj 500ms i ponovno provjeri. Petlja se izvrsava
+			// sve dok se drizzle ne inicijalizira
+			while(!state){
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
+
+				state = this.$store.getters['drizzle/isDrizzleInitialized'];
+			}
+		},
+		setUser(){
+			const account = this.$store.getters['accounts/activeAccount'];
+			const balance = this.$store.getters['accounts/activeBalance'];
+
+			this.user = { account, balance };
+		},
+	},
+	async mounted(){
+		await this.checkState(); // cekanje inicijalizacije drizzle-a
+		this.setUser(); // postavaljnje trenutnog korisnika
 	}
 }
 </script>

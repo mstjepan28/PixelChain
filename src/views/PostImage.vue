@@ -1,36 +1,33 @@
 <template>
-  <div class="postImage">
-    <div>
-      <hr class="PurpleLine" />
-      <InfoBox :info="PostImage" />
-      <hr class="PurpleLine" />
-    </div>
+<div class="postImage">
+	<div>
+		<hr class="PurpleLine" />
+		<InfoBox :info="PostImage" />
+		<hr class="PurpleLine" />
+	</div>
 
-    <file-pond
-      class="filepond"
-      name="test"
-      ref="pond"
-      label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
-      image-crop-aspect-ratio="1"
-      allowImageCrop="true"
-      allowImageTransform="true"
-      :files="myFiles"
-      :allow-multiple="false"
-      labelMaxFileSizeExceeded="File too big to upload"
-      labelMaxFileSize="Max file size: 5MB"
-      maxFileSize="5MB"
-    />
+	<file-pond
+		class="filepond"
+		name="test"
+		ref="pond"
+		label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
+		:files="myFiles"
+		:allow-multiple="false"
+		labelMaxFileSizeExceeded="File too big to upload"
+		labelMaxFileSize="Max file size: 5MB"
+		maxFileSize="5MB"
+	/>
 
-    <textarea
-      class="inputText"
-      placeholder="Write a description for your image..."
-      v-model="imgDescription"
-    ></textarea>
+	<textarea
+		class="inputText"
+		placeholder="Write a description for your image..."
+		v-model="imgDescription"
+	></textarea>
 
-    <div class="buttonContainer">
-      <button class="ButtonDesign2S LightPurple" @click="postImage">Post</button>
-    </div>
-  </div>
+	<div class="buttonContainer">
+		<button class="ButtonDesign2S LightPurple" @click="createImage">Post</button>
+	</div>
+</div>
 </template>
 
 <script>
@@ -43,101 +40,135 @@ import FilePondPluginFileEncode from "filepond-plugin-file-encode";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginImageCrop from "filepond-plugin-image-crop";
 import FilePondPluginImageTransform from "filepond-plugin-image-transform";
+
 import InfoBox from "@/components/InfoBox";
 import store from "@/store.js";
+
 import { mapGetters } from "vuex";
 import ipfs from "../store/ipfs";
+
 // Create component
 const FilePond = vueFilePond(
-  FilePondPluginFileValidateSize,
-  FilePondPluginFileEncode,
-  FilePondPluginImagePreview,
-  FilePondPluginImageCrop,
-  FilePondPluginImageTransform
+	FilePondPluginFileValidateSize,
+	FilePondPluginFileEncode,
+	FilePondPluginImagePreview,
+	FilePondPluginImageCrop,
+	FilePondPluginImageTransform
 );
 
 export default {
-  components: { FilePond, InfoBox },
-  data() {
-    return {
-      myFiles: [],
-      PostImage: { title: "Post a new image", text: store.placeholderText },
-      cid: "",
-      ipfsService: ipfs,
+	components: { FilePond, InfoBox },
+	data() {
+		return {
+			myFiles: [],
+			PostImage: { title: "Post a new image", text: store.placeholderText },
 
-      imgDescription: ""
-    };
-  },
-  computed: {
-    ...mapGetters("drizzle", ["drizzleInstance"]),
-  },
-  methods: {
-    async postImage() {
-      const file = this.$refs.pond.getFiles()[0];
-      if (!file) return;
+			ipfsService: ipfs,
+			imgDescription: ""
+		};
+	},
+	computed: {
+		...mapGetters("drizzle", ["drizzleInstance"]),
+	},
+	methods: {
+		async checkState(){
+			// Dohvati trenutno stanje inicijalizacije drizzle
+			let state = this.drizzleInstance.store.getState();
 
-      const newImage = {
-        imgSrc: file.getFileEncodeDataURL(),
-        author: "",
-        views: 0,
-        description: this.imgDescription,
-        timestamp: Date.now(),
-        comments: [],
-      };
+			// Ako drizzle nije inicijaliziran, pricekaj 500ms i ponovno provjeri. Petlja se izvrsava
+			// sve dok se drizzle ne inicijalizira
+			while(!state.drizzleStatus.initialized){
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
 
-      let ipfsResponse;
-      let currentString;
-      var buf = Buffer.from(newImage.imgSrc, 'base64'); // Ta-da
-      console.log(buf)
-      ipfsResponse = await this.ipfsService.add(file.getFileEncodeDataURL()).catch(err => {
-          console.log(err);
-      });
-      if(this.drizzleInstance){
-            currentString = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
-        }
+				state = this.drizzleInstance.store.getState();
+			}
+		},
 
-      if(currentString == "") this.cid = ipfsResponse.cid.string;
-      else this.cid = currentString + "," + ipfsResponse.cid.string;
+		async getAuthor(){
+			await this.checkState();
+			return this.$store.getters['accounts/activeAccount'];
+		},
 
-      this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(
-        this.cid
-      );
-      console.log(this.cid);
-      console.log(newImage);
+		async createImage(){
+			// Dohvati dodanu datoteku, ukoliko postoji nastavi sa funkcijom
+			const file = this.$refs.pond.getFiles()[0];
+			if (!file) return;
 
-    },
-  },
+			const author = await this.getAuthor();
+
+			// Stvori novi objekt 
+			const newImage = {
+				imgSrc: file.getFileEncodeDataURL(),
+				author: author,
+				description: this.imgDescription,
+				timestamp: Date.now(),
+				comments: [],
+			};
+
+			// Novo stvoreni objekt proslijedi u funkciju koja ga dodaje na IPFS
+			this.postImage(newImage);
+		},
+
+		async postImage(newImage){
+			const stringImg = JSON.stringify(newImage);
+
+			// Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
+			const ipfsResponse = await this.ipfsService.add(stringImg).catch(err => {
+				console.log(err);
+			});
+
+			// Dohvati string koji sadrzi sve CID slika
+			let currentString = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
+
+			// Na currentString konkatiniraj zarez i CID nove slike te taj novi string pohrani na smart contract
+			// Ukoliko je currentString prazan, pohrani CID u newString.
+
+			let newString;
+			if(currentString == "") newString = ipfsResponse.cid.string;
+			else newString = currentString + "," + ipfsResponse.cid.string;
+
+			this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(newString);
+			
+			this.handleImageLocaly(newImage);
+		},
+
+		handleImageLocaly(newImage){
+			store.images.push(newImage); // Dodaj sliku u lokalnu listu slika
+			this.$router.push({ name: 'Home' }) // Prijedi na rutu Home
+		}
+	},
 };
 </script>
 
 <style lang="scss" scoped>
 .postImage {
-  margin-top: 5rem;
-  padding: 0 5rem;
+	margin-top: 5rem;
+	padding: 0 5rem;
 
-  & > * {
-    margin-bottom: 2rem;
-  }
+	& > * {
+		margin-bottom: 2rem;
+	}
 }
 .inputText {
-  height: 5rem;
-  border: 2px solid $LightPurple;
+	height: 5rem;
+	border: 2px solid $LightPurple;
 }
 .buttonContainer {
-  display: flex;
-  justify-content: flex-end;
+	display: flex;
+	justify-content: flex-end;
 
-  .ButtonDesign2S {
-    width: 25%;
-  }
+	.ButtonDesign2S {
+		width: 25%;
+	}
 }
 @media only screen and (max-width: 600px) {
-  .postImage {
-    padding: 0 1rem;
-  }
-  .ButtonDesign2S {
-    width: 100%;
-    margin: 0;
-  }
+	.postImage {
+		padding: 0 1rem;
+	}
+	.ButtonDesign2S {
+		width: 100%;
+		margin: 0;
+	}
 }
 </style>

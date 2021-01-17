@@ -15,11 +15,14 @@
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Images', text:placeholderText}"/><hr class="PurpleLine"/>
 		
 		<div v-if="images" class="sectionContent">
-			<img class="previewImage" @click="openPopup(img)" :key="img" :src="img" v-for="img in images"/>
+			<img class="previewImage" @click="openPopup(img)" :key="img + '' + Math.random()" :src="img.imgSrc" v-for="img in images"/>
 		</div>
 		<div v-else-if="isLoading" class="loadingImages">
 			<h3>Loading images...</h3>
 			<img src="../assets/loading.gif"/>
+		</div>
+		<div v-else class="loadingImages">
+			<h3>No images to show... :(</h3>
 		</div>
 	</div>
 </div>
@@ -31,8 +34,10 @@ import HeaderCarousel from '../components/HeaderCarousel.vue';
 import InfoBox from '@/components/InfoBox';
 import UserCard from '@/components/UserCard';
 import ImageModal from '@/components/imageModal';
+
 import store from '@/store.js';
 import { mapGetters } from "vuex";
+
 export default {
 	components: {
 		HeaderCarousel,
@@ -42,11 +47,14 @@ export default {
 	},
 	data(){
 		return{
-			selectedImage: false,
-			images: store.images,
-			headerInfo: store.headerProps,
+			images: false,
 			users: false,
+			
+			selectedImage: false,
+			
 			isLoading: true,
+
+			headerInfo: store.headerProps,
 			placeholderText: store.placeholderText,
 		}
 	},
@@ -56,31 +64,37 @@ export default {
 	methods:{
 		// Popup ----------------------------------------------------------------------------------
 		openPopup(img){
-			this.selectedImage = img;
+			this.selectedImage = img; // Odabrana slika se postavlja kao selectedImage
 
-			let popupStyle = document.getElementById("imagePopup").style;
+			let popupStyle = document.getElementById("imagePopup").style; // Dohvati stil elementa
 
-			document.documentElement.style.overflow = 'hidden'
-			popupStyle.display = 'flex'
+			document.documentElement.style.overflow = 'hidden'; // Onemoguci scroll
+			popupStyle.display = 'flex'; // Prikazi popup
 		},
 		closePopup(){
-			let popupStyle = document.getElementById("imagePopup").style;
+			let popupStyle = document.getElementById("imagePopup").style; // Dohvati stil elementa
 
-			document.documentElement.style.overflow = 'auto'
-			popupStyle.display = 'none';
+			document.documentElement.style.overflow = 'auto' // Omoguci scroll
+			popupStyle.display = 'none'; // Sakri popup
 		},
 
-		// Images ---------------------------------------------------------------------------------
-		getImages(){
+		// Setting data ---------------------------------------------------------------------------
+		// Dohvati 3 slike iz store.images te loading postavi na false
+		setImages(){
 			this.images = store.images.slice(0,3);
-			this.isLoading = store.isLoading;
+			this.isLoading = false;
 		},
 		getUsers(){
 			this.users = store.users.slice(0,4);
 		},
 
-		// GET IMAGES -----------------------------------------------------------------------------
-		async checkState(state){
+		// Getting data ---------------------------------------------------------------------------
+		async checkState(){
+			// Dohvati trenutno stanje inicijalizacije drizzle
+			let state = this.drizzleInstance.store.getState();
+
+			// Ako drizzle nije inicijaliziran, pricekaj 500ms i ponovno provjeri. Petlja se izvrsava
+			// sve dok se drizzle ne inicijalizira
 			while(!state.drizzleStatus.initialized){
 				const delay = new Promise(resolve => setTimeout(resolve, 500));
 				await delay;
@@ -90,42 +104,59 @@ export default {
 		},
 
 		async fetchImages(){
+			// Dohvati string koji sadrzi sve CID slika sa IPFS-a
 			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
-			console.log("res:", result)
+			if(!result) return [];
 
+			// String pretvori u array na nacin se razdvoji po zarezima. 
 			const imgCidArray = result.split(",");
+			
+			// Return array promis-a koji ce se resolvati u slike
 			return imgCidArray.map(async url => {
-				const img = await fetch(`https://gateway.ipfs.io/ipfs/${url}/`);
-				return img.text();
+				const img = await fetch(`https://gateway.ipfs.io/ipfs/${url}/`); // Fetch sliku sa IPFS-a
+				return img.text(); // Dohvati base64URL
 			});
 		},
+
+		async getImages(){
+			// Provjeri ukoliko slike vec postoje u store.images. Ako postoje dohvacaju se iz store.images.
+			if(store.images.length){
+				this.setImages();
+				return;
+			}
+
+			// Ako je store.images prazan, dohvati slike sa IPFS-a. Prije dohvacanja slika provjeri i pricekaj
+			// inicijalizaciju drizzle-a.
+			await this.checkState();
+
+			// Dohvati slike sa IPFS-a		
+			let promises = await this.fetchImages();
+
+			// Ukoliko ne postoji niti jedna slika, zavrsi funkciju i okoncaj loading
+			if(!promises.length){
+				this.isLoading = false;
+				return;
+			}
+
+			// Resolve promise koji daju JSON u obliku string-a. Taj string se pretvara u objekt i dodaje u store.images
+			Promise.all(promises).then(results => {
+				results.forEach(promiseResult => {
+					const resolvedImg = JSON.parse(promiseResult);
+					store.images.push(resolvedImg)
+				});
+				this.setImages();
+			});
+		}
 	},
 
-	async mounted(){
-		const state = this.drizzleInstance.store.getState();
-		await this.checkState(state)
-		
-		let promises = await this.fetchImages();
-		console.log(promises)
-
-		Promise.all(promises).then(results => {
-			results.forEach(r => {
-				console.log(r);
-				store.images.push(r);
-			})
-
-			console.log("loading finished")
-
-			this.isLoading = false;
-			this.getImages();
-		});
-		
+	mounted(){
+		console.log(store.checkState);
+		this.getImages();
 	},
 }
 </script>
 
 <style lang="scss" scoped>
-
 .section{
 	width: 100%;
 
