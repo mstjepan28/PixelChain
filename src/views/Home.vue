@@ -109,10 +109,10 @@ export default {
 			if(!result) return [];
 
 			// String pretvori u array na nacin se razdvoji po zarezima. 
-			const imgCidArray = result.split(",");
+			//const imgCidArray = result.split(",");
 			
 			// Return array promis-a koji ce se resolvati u slike
-			return imgCidArray.map(async url => {
+			return result.map(async url => {
 				const img = await fetch(`https://gateway.ipfs.io/ipfs/${url}/`); // Fetch sliku sa IPFS-a
 				return img.text(); // Dohvati base64URL
 			});
