@@ -87,7 +87,11 @@ export default {
 
 		async getAuthor(){
 			await this.checkState();
-			return this.$store.getters['accounts/activeAccount'];
+			if(!store.currentUser){
+				return this.$store.getters['accounts/activeAccount'];
+			}else{
+				return store.currentUser;
+			}
 		},
 
 		async createImage(){
@@ -129,8 +133,8 @@ export default {
 			//else newString = currentString + "," + ipfsResponse.cid.string;
 
 			this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(ipfsResponse.cid.string);
-			
-			this.handleImageLocaly(ipfsResponse.cid.string);
+
+			this.handleImageLocaly(newImage);
 		},
 
 		handleImageLocaly(newImage){

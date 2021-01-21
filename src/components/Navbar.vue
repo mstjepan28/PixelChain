@@ -34,7 +34,8 @@
         </span>
 
         <span v-else-if="isDrizzleInitialized" class="navbar-text">
-            <button class="ButtonDesign2S White" @click="showCurUser"> {{curUser}} </button>
+            <button v-if="store.currentUser.username" class="ButtonDesign2S White" @click="showCurUser"> {{store.currentUser.username}} </button>
+            <button v-else class="ButtonDesign2S White" @click="showCurUser"> Anonymous </button>
             <button class="ButtonDesign1" @click="logout"> Log out </button>
         </span>
     </div>
@@ -43,11 +44,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import store from '@/store.js';
 export default {
     data(){
         return{
+            store,
             auth: false,
-            curUser: "Anonymus",
         }
     },
     methods:{

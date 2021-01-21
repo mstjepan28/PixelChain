@@ -9,7 +9,8 @@
 
         <div class="imageInfo">
             <div>
-                <h6 style="overflow-wrap: break-word;">{{info.author + " "}}</h6>
+                <h6 v-if="info.author.username" style="overflow-wrap: break-word;">{{info.author.username + " "}}</h6>
+                <h6 v-else style="overflow-wrap: break-word;">Anonymous</h6>
                 <h6><small>{{info.timestamp}}</small> </h6>
                 <p>{{info.description}}</p>   
             </div>
@@ -47,7 +48,7 @@ export default {
         info: {
             id: {type: String, required: true},
             imgSrc: {type: String, required: true},
-            author: {type: String, required: true},
+            author: {type: Object, required: true},
             views: {type: Number, required: true},
 
             timestamp: {type: Number, required: true},

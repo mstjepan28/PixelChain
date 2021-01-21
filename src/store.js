@@ -4,6 +4,7 @@ import testData from "./TestData.js"; // TEST
 export default{
 	// Data 
 	images: [],
+	currentUser: {},
 	users: testData.users,
 	reports: testData.reports,
 

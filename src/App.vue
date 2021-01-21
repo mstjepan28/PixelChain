@@ -11,9 +11,19 @@
 				</div>
 
 				<div class="modal-body">
-					<div v-if="user.account">
+					<div v-if="user.account && !userHasData">
 						<p>Account: {{user.account}}</p>
 						<p>Balance: {{user.balance + " Wei"}} </p>
+						<form>
+							<input v-model="name" type="text" placeholder="Name" required/>
+							<input v-model="lastname" type="text" placeholder="Last name" required/>
+							<input v-model="username" type="text" placeholder="User name" required/>
+							<button @click="addUser()" >Add</button>
+						</form>
+					</div>
+					<div v-else>
+						<p>Full Name: {{user.name}} {{user.lastname}}</p>
+						<p>Balance: {{user.balance}}</p>
 					</div>
 				</div>
 
@@ -24,7 +34,7 @@
 		</div>
 	</div>
 
-	<Navbar @showUser="showUser"/>
+	<Navbar :info="username" @showUser="showUser"/>
 
 	<router-view/>
 
@@ -33,6 +43,7 @@
 </template>
 
 <script>
+import store from './store';
 import Navbar from '@/components/Navbar.vue';
 import { mapGetters } from 'vuex';
 
@@ -41,12 +52,22 @@ export default {
 	data(){
 		return{
 			user: {},
+			userHasData: false,
+			name: "",
+			lastname: "",
+			username: "",
 		}
 	},
     computed: {
-		...mapGetters('drizzle', ['isDrizzleInitialized'])
+		...mapGetters("drizzle", ["drizzleInstance"]),
 	},
 	methods:{
+		async addUser(){
+			await this.drizzleInstance.contracts.IPFSImageStore.methods.setUser.cacheSend(this.name, this.lastname, this.username);
+			this.name = "";
+			this.lastname = "";
+			this.username = "";
+		},
 		showUser(){
 			$('#userModal').modal('show')
 		},
@@ -62,17 +83,44 @@ export default {
 
 				state = this.$store.getters['drizzle/isDrizzleInitialized'];
 			}
-		},
-		setUser(){
-			const account = this.$store.getters['accounts/activeAccount'];
-			const balance = this.$store.getters['accounts/activeBalance'];
 
-			this.user = { account, balance };
+			
 		},
+		setUser(user){ //Funkcija koja postavlja podatke korisnika za prikaz u aplikaciji.
+			if(!user){ // slučaj kada ne posotje podatci o korisniku onda se samo prikazuje hash računa i iznos na računu
+				const account = this.$store.getters['accounts/activeAccount'];
+				const balance = this.$store.getters['accounts/activeBalance'];
+
+				this.user = { account, balance };
+				this.userHasData = false;
+			}else{ // Slučaj kada postoje podatci o korisniku
+				const name = user.name;
+				const lastname = user.lastname;
+				const username = user.username;
+				const balance = (this.$store.getters['accounts/activeBalance'] / 1000000000000000000).toPrecision(6);
+				this.user = {
+					name,
+					lastname,
+					username,
+					balance
+				}
+				store.currentUser = this.user;
+				this.userHasData = true;
+			}
+			
+		},
+		async checkUser(){ //Funkcija provjerava postoje li podatci o koriniku. Ako postoje vraća ih nazad
+			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getUser().call();
+			if(result.name != "" && result.lastname != "" && result.username != ""){
+				return result
+			}
+			return null;
+		}
 	},
 	async mounted(){
 		await this.checkState(); // cekanje inicijalizacije drizzle-a
-		this.setUser(); // postavaljnje trenutnog korisnika
+		const user = await this.checkUser(); // dohvacanje podataka o korisniku. Ako korisnik nema podatke prikazuje se gumb za dodavanje
+		this.setUser(user); // postavaljnje trenutnog korisnika
 	}
 }
 </script>

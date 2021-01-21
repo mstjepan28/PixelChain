@@ -82,6 +82,7 @@ export default {
 		// Dohvati 3 slike iz store.images te loading postavi na false
 		setImages(){
 			this.images = store.images.slice(0,3);
+			console.log(this.images);
 			this.isLoading = false;
 		},
 		getUsers(){
@@ -149,8 +150,7 @@ export default {
 		}
 	},
 
-	mounted(){
-		console.log(store.checkState);
+	async mounted(){
 		this.getImages();
 	},
 }
