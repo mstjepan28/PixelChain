@@ -23,7 +23,7 @@ import InfoBox from '@/components/InfoBox';
 import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
-
+import { mapGetters } from "vuex";
 export default {
     components:{ InfoBox, ImageModal },
     data(){
@@ -35,6 +35,9 @@ export default {
             selectedImage: false,
             sortValues: false
         }
+    },
+    computed: {
+        ...mapGetters("drizzle", ["drizzleInstance"]),
     },
     methods:{
 		// Popup ----------------------------------------------------------------------------------
@@ -59,14 +62,45 @@ export default {
                 new RegExp(keyword).test(img[atr]) 
             ))
         },
+        async checkState(){
+			// Dohvati trenutno stanje inicijalizacije drizzle
+			let state = this.drizzleInstance.store.getState();
 
-        // Image setup ----------------------------------------------------------------------------
-        getImages(){
-            this.images = store.images;
+			// Ako drizzle nije inicijaliziran, pricekaj 500ms i ponovno provjeri. Petlja se izvrsava
+			// sve dok se drizzle ne inicijalizira
+			while(!state.drizzleStatus.initialized){
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
+
+				state = this.drizzleInstance.store.getState();
+			}
         },
+        async getImages(){
+
+			// Ako je store.images prazan, dohvati slike sa IPFS-a. Prije dohvacanja slika provjeri i pricekaj
+			// inicijalizaciju drizzle-a.
+			await this.checkState();
+
+			// Dohvati slike sa IPFS-a		
+			let promises = await this.fetchImages();
+
+			// Ukoliko ne postoji niti jedna slika, zavrsi funkciju i okoncaj loading
+			if(!promises.length){
+				this.isLoading = false;
+				return;
+			}
+
+			// Resolve promise koji daju JSON u obliku string-a. Taj string se pretvara u objekt i dodaje u store.images
+			Promise.all(promises).then(results => {
+				results.forEach(promiseResult => {
+					const resolvedImg = JSON.parse(promiseResult);
+					this.images.push(resolvedImg)
+				});
+			});
+		}
     },
-    mounted(){
-        this.getImages();
+    async mounted(){
+        await this.checkState();
     },
     watch:{
         searchInput(){ 

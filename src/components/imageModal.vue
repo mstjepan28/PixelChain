@@ -9,7 +9,7 @@
 
         <div class="imageInfo">
             <div>
-                <h6 v-if="info.author.username" style="overflow-wrap: break-word;">{{info.author.username + " "}}</h6>
+                <h6 v-if="info.author" style="overflow-wrap: break-word;">{{info.author.username + " "}}</h6>
                 <h6 v-else style="overflow-wrap: break-word;">Anonymous</h6>
                 <h6><small>{{info.timestamp}}</small> </h6>
                 <p>{{info.description}}</p>   
