@@ -1,40 +1,9 @@
 <template>
 <div>
-	<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Current user's account and balance: </h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
+	<LoginInfo/>
+	<UserDataModal :info="user" @addUserData="addUser"/>
 
-				<div class="modal-body">
-					<div v-if="user.account && !userHasData">
-						<p>Account: {{user.account}}</p>
-						<p>Balance: {{user.balance + " Wei"}} </p>
-						<form>
-							<input v-model="name" type="text" placeholder="Name" required/>
-							<input v-model="lastname" type="text" placeholder="Last name" required/>
-							<input v-model="username" type="text" placeholder="User name" required/>
-							<button @click="addUser()" >Add</button>
-						</form>
-					</div>
-					<div v-else>
-						<p>Full Name: {{user.name}} {{user.lastname}}</p>
-						<p>Balance: {{user.balance}}</p>
-					</div>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="ButtonDesign2S LightPurple" data-dismiss="modal">Okay</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<Navbar :info="username" @showUser="showUser"/>
+	<Navbar @showUser="showUser" @openLoginInstructions="openLoginInstructions"/>
 
 	<router-view/>
 
@@ -43,34 +12,37 @@
 </template>
 
 <script>
-import store from './store';
+import LoginInfo from "@/components/LoginInfo.vue"
+import UserDataModal from "@/components/UserDataModal.vue";
 import Navbar from '@/components/Navbar.vue';
+
+import store from './store';
 import { mapGetters } from 'vuex';
 
 export default {
-	components: { Navbar },
+	components: { Navbar, UserDataModal, LoginInfo },
 	data(){
 		return{
 			user: {},
-			userHasData: false,
-			name: "",
-			lastname: "",
-			username: "",
 		}
 	},
     computed: {
 		...mapGetters("drizzle", ["drizzleInstance"]),
 	},
 	methods:{
-		async addUser(){
-			await this.drizzleInstance.contracts.IPFSImageStore.methods.setUser.cacheSend(this.name, this.lastname, this.username);
-			this.name = "";
-			this.lastname = "";
-			this.username = "";
+		openLoginInstructions(){
+			$('#loginTutorial').modal('show');
 		},
 		showUser(){
-			$('#userModal').modal('show')
+			$('#userModal').modal('show');
 		},
+		
+		async addUser(user){
+			await this.drizzleInstance.contracts.IPFSImageStore.methods.setUser.cacheSend(user.name, user.lastname, user.username);
+			this.setUser(user);
+			$('#userModal').modal('hide');
+		},
+
 		async checkState(){
 			// Dohvati trenutno stanje inicijalizacije drizzle
 			let state = this.$store.getters['drizzle/isDrizzleInitialized'];
@@ -84,32 +56,34 @@ export default {
 				state = this.$store.getters['drizzle/isDrizzleInitialized'];
 			}
 
-			
 		},
-		setUser(user){ //Funkcija koja postavlja podatke korisnika za prikaz u aplikaciji.
-			if(!user){ // slučaj kada ne posotje podatci o korisniku onda se samo prikazuje hash računa i iznos na računu
+
+		//Funkcija koja postavlja podatke korisnika za prikaz u aplikaciji.
+		setUser(user){ 
+			const balance = (this.$store.getters['accounts/activeBalance'] / 1000000000000000000).toPrecision(6);
+
+			// slučaj kada ne posotje podatci o korisniku onda se samo prikazuje hash računa i iznos na računu
+			if(!user){ 
 				const account = this.$store.getters['accounts/activeAccount'];
-				const balance = this.$store.getters['accounts/activeBalance'];
 
 				this.user = { account, balance };
-				this.userHasData = false;
-			}else{ // Slučaj kada postoje podatci o korisniku
-				const name = user.name;
-				const lastname = user.lastname;
-				const username = user.username;
-				const balance = (this.$store.getters['accounts/activeBalance'] / 1000000000000000000).toPrecision(6);
+			}
+			// Slučaj kada postoje podatci o korisniku
+			else{
 				this.user = {
-					name,
-					lastname,
-					username,
+					name: user.name,
+					lastname: user.lastname,
+					username: user.username,
 					balance
 				}
+
 				store.currentUser = this.user;
-				this.userHasData = true;
 			}
 			
 		},
-		async checkUser(){ //Funkcija provjerava postoje li podatci o koriniku. Ako postoje vraća ih nazad
+
+		//Funkcija provjerava postoje li podatci o koriniku. Ako postoje vraća ih nazad
+		async checkUser(){ 
 			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getUser().call();
 			if(result.name != "" && result.lastname != "" && result.username != ""){
 				return result

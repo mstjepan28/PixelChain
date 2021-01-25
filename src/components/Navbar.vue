@@ -9,35 +9,34 @@
     
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/" :class="{curRoute: isCurRoute('/')}">Home</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/Gallery" :class="{curRoute: isCurRoute('/Gallery')}">Gallery</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/Artists" :class="{curRoute: isCurRoute('/Artists')}">Artists</router-link>
             </li>
-            <li class="nav-item" v-if="isDrizzleInitialized">
+            <li class="nav-item" v-if="isDrizzleInitialized" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/PostImage" :class="{curRoute: isCurRoute('/PostImage')}">Post image</router-link>
             </li>
-            <li class="nav-item" v-if="isDrizzleInitialized">
+            <li class="nav-item" v-if="isDrizzleInitialized" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/ReviewReports" :class="{curRoute: isCurRoute('/ReviewReports')}">View reports</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/AboutUs" :class="{curRoute: isCurRoute('/AboutUs')}">About us</router-link>
             </li>
         </ul>
 
         <span v-if="!isDrizzleInitialized" class="navbar-text">
-            <button class="ButtonDesign2S Orange" @click="login"> Login with Metamask </button >
+            <button class="ButtonDesign2S Orange" @click="openLoginInstructions()"> Log in </button >
         </span>
-
         <span v-else-if="isDrizzleInitialized" class="navbar-text">
             <button v-if="store.currentUser.username" class="ButtonDesign2S White" @click="showCurUser"> {{store.currentUser.username}} </button>
             <button v-else class="ButtonDesign2S White" @click="showCurUser"> Anonymous </button>
-            <button class="ButtonDesign1" @click="logout"> Log out </button>
         </span>
+
     </div>
 </nav>
 </template>
@@ -52,24 +51,20 @@ export default {
             auth: false,
         }
     },
+    computed: {
+		...mapGetters('drizzle', ['isDrizzleInitialized'])
+    },
     methods:{
-        login(){
-            this.auth = !this.auth;
-        },
-        logout(){
-            this.auth = !this.auth;
-            console.log("Logout user");
+        openLoginInstructions(){
+            this.$emit("openLoginInstructions");
         },
         showCurUser(){
             this.$emit('showUser');
         },
         isCurRoute(route){
-            return this.$route.path == route
+            return this.$route.path == route;
         },
     },
-    computed: {
-		...mapGetters('drizzle', ['isDrizzleInitialized'])
-	},
 }
 </script>
 
@@ -87,7 +82,6 @@ span > a, button{
 }
 
 .nav-item{
-	margin: 0 4% 0 0;
     white-space: nowrap;
     
     & > a{
@@ -114,6 +108,8 @@ span > a, button{
         display: flex;
         align-items: center;
         justify-content: center;
+
+        padding: .25rem;
 
         border-bottom: 1px solid $LightPurple;
     }

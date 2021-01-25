@@ -15,6 +15,23 @@
     }
 }
 
+.inputBox2{
+    @include inputBox;
+
+    color: white;
+
+    padding: .25rem 0 .25rem 1rem;
+
+    border-radius: 16px;
+    border: 2px solid transparent;
+
+    background: $LightGray;
+
+    &:hover, &:focus{
+        border-color: $LightPurple;
+    }
+}
+
 .inputText{
     width: 100%;
 

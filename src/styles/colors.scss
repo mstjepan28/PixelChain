@@ -21,6 +21,12 @@
         background: $LightGray !important;
     } 
 }
+.Gray{
+    border-color: $Gray !important;
+    &:hover{
+        background: $Gray !important;
+    } 
+}
 .Orange{
     border-color: $Orange !important;
     &:hover{
