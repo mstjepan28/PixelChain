@@ -20,14 +20,16 @@
         
         <div v-else class="reportedImg" style="overflow: auto">
             <div class="selectPreview" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"> 
-                <img :src="img.imgSrc" @click="selectedImage = img">
+                <img :src="img.imgSrc" @click="selectImage(img)">
             </div>
         </div>
     </div> <hr class="PurpleLine"/>
 
     <div class="buttonContainer">
         <button class="ButtonDesign2S Red" @click="cancelReport"> Cancel </button>
-        <button class="ButtonDesign2S LightPurple" @click="submitReport"> Submit report </button>
+
+        <button v-if="report.original_cid" class="ButtonDesign2S LightPurple" @click="sendReport"> Submit report </button>
+        <button v-else class="ButtonDesign2S LightGray" disabled> Submit report </button>
     </div> <hr class="PurpleLine"/>
 </div>
 </template>
@@ -48,16 +50,44 @@ export default{
 
             reportedImage: false,
             selectedImage: false,
+
+            report: {}
         }
     },
     methods:{
+        // Stvori novi report ukoliko je korisnik odabrao sliku
+        sendReport(){
+            if(!this.report.original_cid) return;
+            this.report.votes = 0;
+
+            /*--------------------------------------------------
+                    Poziv funckije za dodavanje reporta
+            --------------------------------------------------*/
+        },
+        
+        // Korisnik u listi odabire sliku koja se pohranjuje kao this.selectedImage te se njen CID pohranjuje kao reported_CID
+        selectImage(image){
+            this.selectedImage = image;
+            this.report.original_cid = image.cid;
+        },
+
+        // Ukloni odabranu sliku
         removeSelectedImage(){
             this.selectedImage = false;
+            this.report.original_cid = false;
         },
+
+        // Dohvacanje slike koju korisnik zeli reportati
         getReportedImage(){
             this.reportedImage = store.images.filter(image => image.cid == this.cid)[0];
+            this.report.reported_cid = this.cid;
         },
+
+        // Ponisti report i vrati se na Home
         cancelReport(){
+            this.report = {};
+            this.selectedImage = false;
+
             this.$router.push({ name: 'Home'})
         }
     },
