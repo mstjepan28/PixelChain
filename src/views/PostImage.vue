@@ -121,16 +121,6 @@ export default {
 			const ipfsResponse = await this.ipfsService.add(stringImg).catch(err => {
 				console.log(err);
 			});
-			
-			// Dohvati string koji sadrzi sve CID slika
-			//let currentString = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
-
-			// Na currentString konkatiniraj zarez i CID nove slike te taj novi string pohrani na smart contract
-			// Ukoliko je currentString prazan, pohrani CID u newString.
-
-			//let newString;
-			//if(currentString == "") newString = ipfsResponse.cid.string;
-			//else newString = currentString + "," + ipfsResponse.cid.string;
 
 			this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(ipfsResponse.cid.string);
 

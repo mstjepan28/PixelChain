@@ -36,7 +36,7 @@ Vue.use(VueRouter)
     component: () => import('../views/PostImage.vue')
   },
   {
-    path: '/SubmitReport/:id',
+    path: '/SubmitReport/:cid',
     name: 'SubmitReport',
     component: () => import('../views/SubmitReport.vue')
   },

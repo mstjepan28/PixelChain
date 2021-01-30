@@ -16,7 +16,7 @@
             </div>
             
             <hr class="LightPurple">
-
+        <!--
             <div class="commentSection">
                 <div class="comment mb-4" :key="comment.timestamp + Math.random()" :info="comment" v-for="comment in info.comments">
                     <h6>{{comment.author + " "}} <small>{{comment.timestamp}}</small></h6> 
@@ -30,7 +30,7 @@
                 <textarea v-model="newComment" class="inputText" placeholder="New comment..."></textarea>
                 <button>Post</button>
             </div>
-
+        -->
             <div class="reportOptions">
                 <button @click="reportImage">Report this image</button>
             </div>
@@ -70,7 +70,7 @@ export default {
         },
         reportImage(){
             this.$emit('closePopup');
-            this.$router.push({ name: 'SubmitReport', params: { id: this.info.id } })
+            this.$router.push({ name: 'SubmitReport', params: { cid: this.info.cid } })
         },
         hidePopup(){
             this.$emit('closePopup');
@@ -149,9 +149,9 @@ export default {
 
     display: flex;
     flex-direction: column;
-
-    justify-content: center;
-
+    /*
+        justify-content: center;
+    */
     padding: 1.5rem 1rem;
     
     background: $DarkGray;

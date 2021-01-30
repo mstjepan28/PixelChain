@@ -51,6 +51,7 @@ export default {
 			users: false,
 			
 			selectedImage: false,
+			cidList: [],
 			
 			isLoading: true,
 
@@ -109,8 +110,8 @@ export default {
 			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
 			if(!result) return [];
 
-			// String pretvori u array na nacin se razdvoji po zarezima. 
-			//const imgCidArray = result.split(",");
+			// Lista CID-a se sprema da bi kasnije mogli odredeni spojiti sa slikom
+			this.cidList = result;
 			
 			// Return array promis-a koji ce se resolvati u slike
 			return result.map(async url => {
@@ -141,8 +142,12 @@ export default {
 
 			// Resolve promise koji daju JSON u obliku string-a. Taj string se pretvara u objekt i dodaje u store.images
 			Promise.all(promises).then(results => {
-				results.forEach(promiseResult => {
+				results.forEach((promiseResult, index) => {
 					const resolvedImg = JSON.parse(promiseResult);
+
+					// Dodaj CID na sliku
+					resolvedImg.cid = this.cidList[index];
+
 					store.images.push(resolvedImg)
 				});
 				this.setImages();

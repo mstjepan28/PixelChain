@@ -27,7 +27,7 @@
 
     <div class="buttonContainer">
         <button class="ButtonDesign2S Red" @click="cancelReport"> Cancel </button>
-        <button class="ButtonDesign2S LightPurple"> Submit report </button>
+        <button class="ButtonDesign2S LightPurple" @click="submitReport"> Submit report </button>
     </div> <hr class="PurpleLine"/>
 </div>
 </template>
@@ -41,7 +41,7 @@ export default{
     components: { InfoBox },
     data(){
         return{
-            id: this.$route.params.id,
+            cid: this.$route.params.cid,
             submitReport: {title: "Submit a report", text: store.placeholderText },
 
             imageList: store.images,
@@ -55,7 +55,7 @@ export default{
             this.selectedImage = false;
         },
         getReportedImage(){
-            this.reportedImage = store.images.filter(image => image.id == this.id)[0];
+            this.reportedImage = store.images.filter(image => image.cid == this.cid)[0];
         },
         cancelReport(){
             this.$router.push({ name: 'Home'})
