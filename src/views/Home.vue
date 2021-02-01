@@ -83,10 +83,9 @@ export default {
 		// Dohvati 3 slike iz store.images te loading postavi na false
 		setImages(){
 			this.images = store.images.slice(0,3);
-			console.log(this.images);
 			this.isLoading = false;
 		},
-		getUsers(){
+		setUsers(){
 			this.users = store.users.slice(0,4);
 		},
 
@@ -107,7 +106,7 @@ export default {
 
 		async fetchImages(){
 			// Dohvati string koji sadrzi sve CID slika sa IPFS-a
-			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
+			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getAllImages().call();
 			if(!result) return [];
 
 			// Lista CID-a se sprema da bi kasnije mogli odredeni spojiti sa slikom
@@ -190,16 +189,6 @@ export default {
 	width: 30%;
 
 	cursor: pointer;
-}
-
-.loadingImages{
-	display: flex;
-	flex-direction: column;
-
-	justify-content: center;
-	align-items: center;
-
-	padding-top: 2rem;
 }
 
 @media only screen and (max-width: 600px) {

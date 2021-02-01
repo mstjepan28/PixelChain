@@ -87,11 +87,10 @@ export default {
 
 		async getAuthor(){
 			await this.checkState();
-			if(!store.currentUser){
-				return this.$store.getters['accounts/activeAccount'];
-			}else{
-				return store.currentUser;
-			}
+			
+			const author = store.currentUser? store.currentUser: this.$store.getters['accounts/activeAccount'];
+
+			return author? author.username: "Anonymus";
 		},
 
 		async createImage(){
@@ -124,13 +123,9 @@ export default {
 
 			this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(ipfsResponse.cid.string);
 
-			this.handleImageLocaly(newImage);
+			// Nakon dodavanja slike, otiđi na Home
+			this.$router.push({ name: 'Home' })
 		},
-
-		handleImageLocaly(newImage){
-			store.images.push(newImage); // Dodaj sliku u lokalnu listu slika
-			this.$router.push({ name: 'Home' }) // Prijedi na rutu Home
-		}
 	},
 };
 </script>

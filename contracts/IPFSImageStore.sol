@@ -113,7 +113,7 @@ contract IPFSImageStore {
     return temp;
   }
 
-  function getAll() public view returns (string[] memory) {
+  function getAllImages() public view returns (string[] memory) {
     return allImages;
   }
 

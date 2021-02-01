@@ -35,6 +35,16 @@
 // -----------------------------------------------------------------------
 // 3. Misc. -------------------------------------------------------------
 // -----------------------------------------------------------------------
+.loadingImages{
+	display: flex;
+	flex-direction: column;
+
+	justify-content: center;
+	align-items: center;
+
+	padding-top: 2rem;
+}
+
 .PurpleLine{
 	width: 50%;
 	border: 2px solid $LightPurple;

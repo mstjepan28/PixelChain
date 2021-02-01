@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <div v-if="info.account && !userHasData">
                     <p>Account: {{info.account}}</p>
-                    <p>Balance: {{info.balance + " Wei"}} </p>
+                    <p>Balance: {{info.balance + " ETH"}} </p>
 
                     <form @submit.prevent="addUserData()">
                         <p>Please fill the form with your information: </p>
