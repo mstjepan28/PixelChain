@@ -16,6 +16,7 @@ import store from '@/store.js';
 import InfoBox from '../components/InfoBox.vue';
 import ReviewReport from '@/components/reviewReportComp.vue';
 import ipfs from "../store/ipfs";
+import { mapGetters } from "vuex";
 export default {
     components: { InfoBox, ReviewReport },
     data(){
@@ -28,29 +29,64 @@ export default {
             imgArr: [],
         }
     },
-     
+    computed: {
+        ...mapGetters("drizzle", ["drizzleInstance"]),
+    },
     methods:{
-        getReports(){
+        async checkState(){
+			// Dohvati trenutno stanje inicijalizacije drizzle
+			let state = this.drizzleInstance.store.getState();
+
+			// Ako drizzle nije inicijaliziran, pricekaj 500ms i ponovno provjeri. Petlja se izvrsava
+			// sve dok se drizzle ne inicijalizira
+			while(!state.drizzleStatus.initialized){
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
+
+				state = this.drizzleInstance.store.getState();
+			}
+		},
+        async addVote(vote, report){
+            const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.checkVoter(report).call();
+            if(result){
+                this.drizzleInstance.contracts.IPFSImageStore.methods.voteReport.cacheSend(report, vote);
+                return true;
+            }else{
+                return false;
+            }
+
+        },
+        async getReports(){
             this.reports = store.reports;
+            console.log(this.reports)
+            if(this.reports.length == 0){
+                const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getReports().call();
+                for(const e of result){
+                    if(e.endDate != "0"){
+                        const res1 = await fetch(`http://127.0.0.1:8080/ipfs/${e.reported_cid}/`);
+                        const res2 = await fetch(`http://127.0.0.1:8080/ipfs/${e.original_cid}/`);
+
+                        let reportedImg = await res1.text();
+                        let originalImg = await res2.text();
+
+                        let report = {
+                            id: e.ID,
+                            reportedImg: reportedImg,
+                            matchingImg: originalImg,
+                            description: e.Description,
+                            reportedDate: e.startDate*1000,
+                            reportEndDate: e.endDate*1000,
+                        }
+                        
+                        this.reports.push(report);
+                    }
+                }
+            }    
         }
     },
     async mounted(){
-        if(this.drizzleInstance){
-            let res = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
-            //let image = await this.ipfsService.get(res);
-            console.log(res)
-            this.arr = res.split(",");
-        }
-
-        this.arr.forEach(e => {
-            fetch(`https://gateway.ipfs.io/ipfs/${e}/`)
-            .then(response => response.text())
-            .then(data => {
-                this.imgArr.push(data);
-            });
-        });
-        
-        console.log(this.imgArr);
+        await this.checkState();
+        this.getReports();
     }
 }
 </script>

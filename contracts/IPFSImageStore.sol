@@ -3,15 +3,25 @@ pragma experimental ABIEncoderV2;
 
 contract IPFSImageStore {
 
-  string[] allImages;
+  Image[] allImages;
   Report[] reports;
   uint idx;
   uint reportId;
 
-  struct Report{
+struct Image{
+    string cid;
+    string	author;
+	  string description;
+	  uint timestamp;
+}
+
+struct Report{
     uint ID;
     string original_cid;
     string reported_cid;
+    string Description;
+    uint startDate;
+    uint endDate;
     int votes;
   }
 
@@ -30,8 +40,8 @@ contract IPFSImageStore {
     reportId = 0;
   }
 
-  function addReport(string memory _original, string memory _reported) public {
-    reports.push(Report(reportId, _original, _reported, 1));
+  function addReport(string memory _original, string memory _reported, string memory _description) public {
+    reports.push(Report(reportId, _original, _reported, _description, block.timestamp, block.timestamp + 2592000, 1));
     users[msg.sender].votedReports.push(reportId);
     reportId++;
   }
@@ -39,26 +49,28 @@ contract IPFSImageStore {
   function getReports() public view returns(Report[] memory) {
       return reports;
   }
-  
-  function voteReport(uint _id, bool vote) public returns(bool) {
+
+  function checkVoter(uint _id) public view returns(bool) {
       for(uint i = 0; i < users[msg.sender].votedReports.length; i++){
           uint id = users[msg.sender].votedReports[i];
           if(id == _id){
               return false;
           }
       }
+      return true;
+  }
+  
+  function voteReport(uint _id, bool vote) public {
+      if(!checkVoter(_id)) return;
       if(vote){
           reports[_id].votes++;
           users[msg.sender].votedReports.push(_id);
           checkReports();
-          return true;
       }else{
           reports[_id].votes--;
           users[msg.sender].votedReports.push(_id);
           checkReports();
-          return true;
-      }
-      
+      } 
   }
 
   function checkReports() private {
@@ -73,18 +85,18 @@ contract IPFSImageStore {
   
   function deleteImage(string memory _cid) private{
     string memory mem;
-    for(uint i = 0; i < allImages.length; i++){
-      mem = allImages[i];
+    for(uint i = 0; i < idx; i++){
+      mem = allImages[i].cid;
       if(keccak256(bytes(mem)) == keccak256(bytes(_cid))){
-        allImages[i] = "CopyRight";
+        allImages[i].cid = "CopyRight";
       }
     }
   }
   
-  function checkImage(string memory _cid) private view returns(bool){
+  function checkImage(string memory _cid) public view returns(bool){
       string memory mem;
-      for(uint i = 0; i < allImages.length;i++){
-        mem = allImages[i];
+      for(uint i = 0; i < idx;i++){
+        mem = allImages[i].cid;
         if(keccak256(bytes(mem)) == keccak256(bytes(_cid))){
             return false;
         }
@@ -92,18 +104,14 @@ contract IPFSImageStore {
       return true;
   }
 
-  function set(string memory _cid) public returns(bool){
-     if(checkImage(_cid)){
-         allImages.push(_cid);
-         users[msg.sender].indexs.push(idx);
-        idx++;
-        return true;
-     }
-     return false;
+  function set(string memory _cid, string memory _author, string memory _description) public returns(bool){
+    allImages.push(Image(_cid, _author, _description, block.timestamp));
+    users[msg.sender].indexs.push(idx);
+    idx++;
   }
 
-  function get() public view returns (string[] memory){
-    string[] memory temp = new string[](idx);
+  function get() public view returns (Image[] memory){
+    Image[] memory temp = new Image[](idx);
     uint idxLength = users[msg.sender].indexs.length;
     uint mem;
     for(uint i = 0; i < idxLength; i++){
@@ -113,7 +121,7 @@ contract IPFSImageStore {
     return temp;
   }
 
-  function getAllImages() public view returns (string[] memory) {
+  function getAllImages() public view returns (Image[] memory) {
     return allImages;
   }
 

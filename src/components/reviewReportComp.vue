@@ -15,8 +15,8 @@
         <h6 style="align-self: center"> Is this report valid? </h6>
         <div class="votingContainer">
             <hr class="PurpleLine"/>
-            <button class="ButtonDesign2S LightPurple" @click="addVote(1)"> Yes </button>
-            <button class="ButtonDesign2S LightPurple" @click="addVote(-1)"> No </button>
+            <button class="ButtonDesign2S LightPurple" @click="addVote(true)"> Yes </button>
+            <button class="ButtonDesign2S LightPurple" @click="addVote(false)"> No </button>
             <hr class="PurpleLine"/>
         </div>
     </div>
@@ -68,8 +68,9 @@ export default {
         }
     },
     methods:{
-        addVote(vote){
-            console.log(vote);
+        async addVote(vote){
+            const results = await this.$parent.addVote(vote, this.info.id)
+            console.log(results)
         },
     },
     mounted(){

@@ -83,6 +83,7 @@ export default {
 		// Dohvati 3 slike iz store.images te loading postavi na false
 		setImages(){
 			this.images = store.images.slice(0,3);
+			console.log(this.images)
 			this.isLoading = false;
 		},
 		setUsers(){
@@ -106,16 +107,20 @@ export default {
 
 		async fetchImages(){
 			// Dohvati string koji sadrzi sve CID slika sa IPFS-a
-			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getAllImages().call();
+			let result = await this.drizzleInstance.contracts.IPFSImageStore.methods.get().call();
 			if(!result) return [];
 
 			// Lista CID-a se sprema da bi kasnije mogli odredeni spojiti sa slikom
 			this.cidList = result;
-			
+			console.log(result);
 			// Return array promis-a koji ce se resolvati u slike
 			return result.map(async url => {
-				const img = await fetch(`https://gateway.ipfs.io/ipfs/${url}/`); // Fetch sliku sa IPFS-a
-				return img.text(); // Dohvati base64URL
+				if(url.cid === "CopyRight"){
+					return null;
+				}else{
+					let img = await fetch(`http://127.0.0.1:8080/ipfs/${url.cid}/`); // Fetch sliku sa IPFS-a
+					return img.text(); // Dohvati base64URL
+				}	
 			});
 		},
 
@@ -142,12 +147,13 @@ export default {
 			// Resolve promise koji daju JSON u obliku string-a. Taj string se pretvara u objekt i dodaje u store.images
 			Promise.all(promises).then(results => {
 				results.forEach((promiseResult, index) => {
-					const resolvedImg = JSON.parse(promiseResult);
+					//const resolvedImg = JSON.parse(promiseResult);
 
 					// Dodaj CID na sliku
-					resolvedImg.cid = this.cidList[index];
+					//if()
+					const img = Object.assign({imgSrc: promiseResult}, this.cidList[index]);
 
-					store.images.push(resolvedImg)
+					store.images.push(img)
 				});
 				this.setImages();
 			});

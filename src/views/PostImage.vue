@@ -88,9 +88,9 @@ export default {
 		async getAuthor(){
 			await this.checkState();
 			
-			const author = store.currentUser? store.currentUser: this.$store.getters['accounts/activeAccount'];
-
-			return author? author.username: "Anonymus";
+			const author = await store.currentUser? store.currentUser: this.$store.getters['accounts/activeAccount'];
+			console.log(author)
+			return author.value? author.username: "Anonymus";
 		},
 
 		async createImage(){
@@ -99,14 +99,12 @@ export default {
 			if (!file) return;
 
 			const author = await this.getAuthor();
-
 			// Stvori novi objekt 
 			const newImage = {
 				imgSrc: file.getFileEncodeDataURL(),
 				author: author,
 				description: this.imgDescription,
 				timestamp: Date.now(),
-				comments: [],
 			};
 
 			// Novo stvoreni objekt proslijedi u funkciju koja ga dodaje na IPFS
@@ -114,17 +112,21 @@ export default {
 		},
 
 		async postImage(newImage){
-			const stringImg = JSON.stringify(newImage);
 
 			// Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
-			const ipfsResponse = await this.ipfsService.add(stringImg).catch(err => {
+			const ipfsResponse = await this.ipfsService.add(newImage.imgSrc).catch(err => {
 				console.log(err);
 			});
+			console.log(newImage, ipfsResponse.cid.string);
+			const status = await this.drizzleInstance.contracts.IPFSImageStore.methods.checkImage(ipfsResponse.cid.string).call();
 
-			this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(ipfsResponse.cid.string);
-
+			if(status){
+				this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(ipfsResponse.cid.string, newImage.author, newImage.description);
+				return this.$router.push({ name: 'Home' })
+			}
+			console.log("Image already exists")
 			// Nakon dodavanja slike, otiđi na Home
-			this.$router.push({ name: 'Home' })
+			
 		},
 	},
 };
