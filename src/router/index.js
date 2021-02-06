@@ -15,11 +15,13 @@ Vue.use(VueRouter)
     name: 'Gallery',
     component: () => import('../views/Gallery.vue')
   },
+  /* Popis svih korisnika
   {
     path: '/Artists',
     name: 'Artists',
     component: () => import('../views/Artists.vue')
   },
+  */
   {
     path: '/User/:id',
     name: 'User',

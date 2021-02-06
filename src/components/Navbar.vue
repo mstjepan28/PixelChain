@@ -15,9 +15,11 @@
             <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/Gallery" :class="{curRoute: isCurRoute('/Gallery')}">Gallery</router-link>
             </li>
+            <!--
             <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/Artists" :class="{curRoute: isCurRoute('/Artists')}">Artists</router-link>
             </li>
+            -->
             <li class="nav-item" v-if="isDrizzleInitialized" data-toggle="collapse" data-target=".navbar-collapse.show">
                 <router-link class="nav-link" to="/PostImage" :class="{curRoute: isCurRoute('/PostImage')}">Post image</router-link>
             </li>
@@ -33,8 +35,8 @@
             <button class="ButtonDesign2S Orange" @click="openLoginInstructions()"> Log in </button >
         </span>
         <span v-else-if="isDrizzleInitialized" class="navbar-text">
-            <button v-if="store.currentUser.username" class="ButtonDesign2S White" @click="showCurUser"> {{store.currentUser.username}} </button>
-            <button v-else class="ButtonDesign2S White" @click="showCurUser"> Anonymous </button>
+            <button v-if="store.currentUser.username" class="ButtonDesign2S White" @click="openCurUser"> {{store.currentUser.username}} </button>
+            <button v-else class="ButtonDesign2S White" @click="openCurUser"> Anonymous </button>
         </span>
 
     </div>
@@ -55,6 +57,9 @@ export default {
 		...mapGetters('drizzle', ['isDrizzleInitialized'])
     },
     methods:{
+        openCurUser(){
+            this.$router.push({ name: 'User', params: { id: "curUser" } })
+        },
         openLoginInstructions(){
             this.$emit("openLoginInstructions");
         },

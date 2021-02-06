@@ -1,12 +1,14 @@
 import moment from 'moment';
-import testData from "./TestData.js"; // TEST
+//import testData from "./TestData.js"; // TEST
 
 export default{
 	// Data 
 	images: [],
+	users: [],
+	reports: [],
+
 	currentUser: {},
-	users: testData.users,
-	reports: testData.reports,
+	userHasData: false,
 
 	placeholderText: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quisquam tempora provident magnam, repellendus aperiam iure sit praesentium eligendi ad excepturi qui blanditiis totam quos non, voluptate inventore quam dolores molestiae labore perspiciatis repellat, nesciunt laborum? Saepe dicta consequuntur iste magnam voluptatibus provident quod quia eligendi fugiat deleniti quis unde quas enim, recusandae illo maxime, reprehenderit obcaecati. Hic debitis",
 

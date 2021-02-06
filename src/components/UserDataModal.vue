@@ -3,37 +3,20 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Current user's account and balance: </h5>
+                <p>Please fill the form with your information: </p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <div class="modal-body">
-                <div v-if="info.account && !userHasData">
-                    <p>Account: {{info.account}}</p>
-                    <p>Balance: {{info.balance + " ETH"}} </p>
+            <form class="modal-body" @submit.prevent="addUserData()">
+                <input class="inputBox2" v-model="user.name" type="text" placeholder="Name" required/>
+                <input class="inputBox2" v-model="user.lastname" type="text" placeholder="Last name" required/>
+                <input class="inputBox2" v-model="user.username" type="text" placeholder="User name" required/>
 
-                    <form @submit.prevent="addUserData()">
-                        <p>Please fill the form with your information: </p>
-
-                        <input class="inputBox2" v-model="user.name" type="text" placeholder="Name" required/>
-                        <input class="inputBox2" v-model="user.lastname" type="text" placeholder="Last name" required/>
-                        <input class="inputBox2" v-model="user.username" type="text" placeholder="User name" required/>
-
-                        <button v-if="isFormFilled" type="submit" class="ButtonDesign2S LightPurple"> Add information </button>
-                        <button v-else class="ButtonDesign2S LightGray" disabled> Add information </button>
-                    </form>
-                </div>
-                <div v-else>
-                    <p>Full Name: {{info.name}} {{info.lastname}}</p>
-                    <p>Balance: {{info.balance}}</p>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="ButtonDesign2S LightPurple" data-dismiss="modal">Okay</button>
-            </div>
+                <button v-if="isFormFilled" type="submit" class="ButtonDesign2S LightPurple"> Add information </button>
+                <button v-else class="ButtonDesign2S LightGray" disabled> Add information </button>
+            </form>
         </div>
     </div>
 </div>
@@ -72,6 +55,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.modal-header, .modal-footer{
+    border: 0;
+    margin: 0;
+}
+.modal-content{
+    border-radius: 16px;
+    border: 2px solid $Red;
+}
 form{
 	display: flex;
 	flex-direction: column;
@@ -79,10 +70,8 @@ form{
 	text-align: center;
 	justify-content: center;
 
-	padding: .5rem;
-
-	border-radius: 16px;
-	border: 1px solid red;
+    padding: .5rem;
+    margin: .5rem;
 
 	& > input{
 		margin-bottom: 1rem;

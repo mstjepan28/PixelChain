@@ -3,7 +3,7 @@
 	<LoginInfo/>
 	<UserDataModal :info="user" @addUserData="addUser"/>
 
-	<Navbar @showUser="showUser" @openLoginInstructions="openLoginInstructions"/>
+	<Navbar @openLoginInstructions="openLoginInstructions"/>
 
 	<router-view/>
 
@@ -33,16 +33,7 @@ export default {
 		openLoginInstructions(){
 			$('#loginTutorial').modal('show');
 		},
-		showUser(){
-			$('#userModal').modal('show');
-		},
 		
-		async addUser(user){
-			await this.drizzleInstance.contracts.IPFSImageStore.methods.setUser.cacheSend(user.name, user.lastname, user.username);
-			this.setUser(user);
-			$('#userModal').modal('hide');
-		},
-
 		async checkState(){
 			// Dohvati trenutno stanje inicijalizacije drizzle
 			let state = this.$store.getters['drizzle/isDrizzleInitialized'];
@@ -55,7 +46,16 @@ export default {
 
 				state = this.$store.getters['drizzle/isDrizzleInitialized'];
 			}
+		},
 
+		// USER -----------------------------------------------------------------------------------
+		//Funkcija provjerava postoje li podatci o koriniku. Ako postoje vraća ih nazad
+		async checkUser(){ 
+			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getUser().call();
+			if(result.name != "" && result.lastname != "" && result.username != ""){
+				return result
+			}
+			return null;
 		},
 
 		//Funkcija koja postavlja podatke korisnika za prikaz u aplikaciji.
@@ -65,31 +65,28 @@ export default {
 			// slučaj kada ne posotje podatci o korisniku onda se samo prikazuje hash računa i iznos na računu
 			if(!user){ 
 				const account = this.$store.getters['accounts/activeAccount'];
-
-				this.user = { account, balance };
+				store.currentUser = { account, balance };
 			}
 			// Slučaj kada postoje podatci o korisniku
 			else{
-				this.user = {
+				store.currentUser = {
 					name: user.name,
 					lastname: user.lastname,
 					username: user.username,
 					balance
 				}
-
-				store.currentUser = this.user;
 			}
-			
+			store.userHasData = store.currentUser.name? true: false;
+
+			const randNumber = Math.round(Math.random() * 10) // Modal ima 50% sanse da se pojavi
+			if(!store.userHasData && randNumber >= 5) $('#userModal').modal('show');
 		},
 
-		//Funkcija provjerava postoje li podatci o koriniku. Ako postoje vraća ih nazad
-		async checkUser(){ 
-			const result = await this.drizzleInstance.contracts.IPFSImageStore.methods.getUser().call();
-			if(result.name != "" && result.lastname != "" && result.username != ""){
-				return result
-			}
-			return null;
-		}
+		async addUser(user){
+			await this.drizzleInstance.contracts.IPFSImageStore.methods.setUser.cacheSend(user.name, user.lastname, user.username);
+			this.setUser(user);
+			$('#userModal').modal('hide');
+		},
 	},
 	async mounted(){
 		await this.checkState(); // cekanje inicijalizacije drizzle-a
