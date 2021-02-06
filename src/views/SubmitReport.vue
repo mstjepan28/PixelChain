@@ -5,7 +5,7 @@
     </div>
 
     <div class="reportDescription">
-        <textarea class="inputText" placeholder="Describe why you are reporting this image..."></textarea>
+        <textarea v-model="description" class="inputText" placeholder="Describe why you are reporting this image..."></textarea>
     </div> <hr class="PurpleLine"/>
 
     <div v-if="reportedImage" class="imageContainer">
@@ -19,8 +19,8 @@
         </div>
         
         <div v-else class="reportedImg" style="overflow: auto">
-            <div class="selectPreview" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList"> 
-                <img :src="img.imgSrc" @click="selectImage(img)">
+            <div class="selectPreview" :key="img.imgSrc" :src="img.imgSrc" v-for="img in imageList">
+                <img v-if="img.cid != reportedImage.cid" :src="img.imgSrc" @click="selectImage(img)">
             </div>
         </div>
     </div> <hr class="PurpleLine"/>
@@ -38,7 +38,7 @@
 
 import store from '@/store.js';
 import InfoBox from '../components/InfoBox.vue';
-
+import { mapGetters } from "vuex";
 export default{
     components: { InfoBox },
     data(){
@@ -50,15 +50,35 @@ export default{
 
             reportedImage: false,
             selectedImage: false,
-
+            description: "",
             report: {}
         }
     },
+    computed: {
+		...mapGetters("drizzle", ["drizzleInstance"]),
+	},
     methods:{
+        async checkState(){
+			// Dohvati trenutno stanje inicijalizacije drizzle
+			let state = this.drizzleInstance.store.getState();
+
+			// Ako drizzle nije inicijaliziran, pricekaj 500ms i ponovno provjeri. Petlja se izvrsava
+			// sve dok se drizzle ne inicijalizira
+			while(!state.drizzleStatus.initialized){
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
+
+				state = this.drizzleInstance.store.getState();
+			}
+		},
         // Stvori novi report ukoliko je korisnik odabrao sliku
-        sendReport(){
+        async sendReport(){
             if(!this.report.original_cid) return;
             this.report.votes = 0;
+            await this.checkState();
+            console.log("Reported:", this.reportedImage);
+            console.log("Original:", this.selectedImage);
+            this.drizzleInstance.contracts.IPFSImageStore.methods.addReport.cacheSend(this.selectedImage.cid, this.reportedImage.cid, this.description);
 
             /*--------------------------------------------------
                     Poziv funckije za dodavanje reporta

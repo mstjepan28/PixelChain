@@ -62,12 +62,12 @@ export default {
         }
     },
     methods:{
-        convertCommentTimeStamps(comments){
+/*         convertCommentTimeStamps(comments){
             comments.forEach(comment => {
                 comment.timestamp = store.timestampToDate(comment.timestamp);
             });
             return comments;
-        },
+        }, */
         reportImage(){
             this.$emit('closePopup');
             this.$router.push({ name: 'SubmitReport', params: { cid: this.info.cid } })
@@ -79,8 +79,9 @@ export default {
     watch:{
         info(){
             if(!this.info) return;
-            this.info.timestamp = store.timestampToDate(this.info.timestamp);
-            this.info.comments = this.convertCommentTimeStamps(this.info.comments);
+            if(store.timestampToDate(parseInt(this.info.timestamp)*1000) != "Invalid date"){
+                this.info.timestamp = store.timestampToDate(parseInt(this.info.timestamp)*1000);
+            }
         }
     }
 }

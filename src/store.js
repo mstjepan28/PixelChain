@@ -6,7 +6,7 @@ export default{
 	images: [],
 	currentUser: {},
 	users: testData.users,
-	reports: testData.reports,
+	reports: [],
 
 	placeholderText: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quisquam tempora provident magnam, repellendus aperiam iure sit praesentium eligendi ad excepturi qui blanditiis totam quos non, voluptate inventore quam dolores molestiae labore perspiciatis repellat, nesciunt laborum? Saepe dicta consequuntur iste magnam voluptatibus provident quod quia eligendi fugiat deleniti quis unde quas enim, recusandae illo maxime, reprehenderit obcaecati. Hic debitis",
 
