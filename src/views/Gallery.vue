@@ -1,27 +1,29 @@
 <template>
-<div class="PageContent">
+<div>
     <ImageModal @closePopup="closePopup" :info="selectedImage"/>
 
-    <div>
-        <hr class="PurpleLine"/> <InfoBox :info="Gallery"/> <hr class="PurpleLine"/>
-    </div>
+	<div class="PageContent" style="padding-top: 5rem">
+		<div>
+			<hr class="PurpleLine"/> <InfoBox :info="Gallery"/> <hr class="PurpleLine"/>
+		</div>
 
-    <div class="optionsBar">
-        <input class="inputBox" type="text" v-model="searchInput" placeholder="Search..." @keyup="search">
-    </div>
+		<div class="optionsBar">
+			<input class="inputBox" type="text" v-model="searchInput" placeholder="Search..." @keyup="search">
+		</div>
 
-    <div v-if="images" class="pageContent">
-        <div class="images">
-            <img @click="openPopup(img)" :key="img.id" :src="img.imgSrc" v-for="img in images"/>
-        </div>
-    </div>
-    <div v-else-if="isLoading" class="loadingImages">
-        <h3>Loading images...</h3>
-        <img src="../assets/loading.gif"/>
-    </div>
-    <div v-else class="loadingImages">
-        <h3>No images to show... :(</h3>
-    </div>
+		<div v-if="images" class="pageContent">
+			<div class="images">
+				<img @click="openPopup(img)" :key="img.id" :src="img.imgSrc" v-for="img in images"/>
+			</div>
+		</div>
+		<div v-else-if="isLoading" class="loadingImages">
+			<h3>Loading images...</h3>
+			<img src="../assets/loading.gif"/>
+		</div>
+		<div v-else class="loadingImages">
+			<h3>No images to show... :(</h3>
+		</div>
+	</div>
 </div>
 </template>
 
