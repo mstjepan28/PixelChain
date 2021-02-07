@@ -93,8 +93,8 @@ export default {
 			await this.checkState();
 			
 			const author = await store.currentUser? store.currentUser: this.$store.getters['accounts/activeAccount'];
-			console.log(author)
-			return author.value? author.username: "Anonymus";
+			console.log(author.username)
+			return author.username? author.username: "Anonymus";
 		},
 
 		async createImage(){
@@ -122,7 +122,7 @@ export default {
 			const ipfsResponse = await this.ipfsService.add(newImage.imgSrc).catch(err => {
 				console.log(err);
 			});
-			console.log(newImage, ipfsResponse.cid.string);
+			
 			const status = await this.drizzleInstance.contracts.IPFSImageStore.methods.checkImage(ipfsResponse.cid.string).call();
 
 			if(status){
