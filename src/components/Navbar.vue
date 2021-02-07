@@ -58,7 +58,7 @@ export default {
     },
     methods:{
         openCurUser(){
-            this.$router.push({ name: 'User', params: { id: "curUser" } })
+            this.$emit("openCurUser");
         },
         openLoginInstructions(){
             this.$emit("openLoginInstructions");

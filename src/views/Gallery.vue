@@ -7,7 +7,7 @@
     </div>
 
     <div class="optionsBar">
-        <input class="inputBox" type="text" v-model="searchInput" placeholder="Search...">
+        <input class="inputBox" type="text" v-model="searchInput" placeholder="Search..." @keyup="search">
     </div>
 
     <div v-if="images" class="pageContent">
@@ -68,9 +68,9 @@ export default {
 		},
         
         // Search ---------------------------------------------------------------------------------
-        search(keyword){
-            this.images = this.images.filter( img => Object.keys(img).some(atr => 
-                new RegExp(keyword).test(img[atr]) 
+        search(){
+            this.images = store.images.filter( img => Object.keys(img).some(atr => 
+                new RegExp(this.searchInput).test(img[atr]) 
             ))
         },
 
@@ -112,12 +112,8 @@ export default {
 		},
 
 		async getImages(){
-			// Provjeri ukoliko slike vec postoje u store.images. Ako postoje dohvacaju se iz store.images.
-			if(store.images.length){
-				this.setImages();
-				return;
-			}
-
+			store.images = [];
+			
 			// Ako je store.images prazan, dohvati slike sa IPFS-a. Prije dohvacanja slika provjeri i pricekaj
 			// inicijalizaciju drizzle-a.
 			await this.checkState();
@@ -130,7 +126,7 @@ export default {
 				this.isLoading = false;
 				return;
 			}
-
+			
 			// Resolve promise koji daju JSON u obliku string-a. Taj string se pretvara u objekt i dodaje u store.images
 			Promise.all(promises).then(results => {
 				results.forEach((promiseResult, index) => {
@@ -150,6 +146,7 @@ export default {
     async mounted(){
         this.getImages();
     },
+	/*
     watch:{
         searchInput(){ 
             // Ako se promjenio searchInput, provjeri sljedeci uvjet
@@ -158,6 +155,7 @@ export default {
             this.searchInput.length? this.search(this.searchInput): this.getImages();
         }
     },
+	*/
 }
 </script>
 

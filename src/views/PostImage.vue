@@ -18,6 +18,8 @@
 		maxFileSize="5MB"
 	/>
 
+	<div v-if="imageExists" class="imageExists"> Image already exists! </div>
+
 	<textarea
 		class="inputText"
 		placeholder="Write a description for your image..."
@@ -64,7 +66,9 @@ export default {
 			PostImage: { title: "Post a new image", text: store.placeholderText },
 
 			ipfsService: ipfs,
-			imgDescription: ""
+			imgDescription: "",
+
+			imageExists: false,
 		};
 	},
 	computed: {
@@ -112,6 +116,7 @@ export default {
 		},
 
 		async postImage(newImage){
+			this.imageExists = false;
 
 			// Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
 			const ipfsResponse = await this.ipfsService.add(newImage.imgSrc).catch(err => {
@@ -124,22 +129,23 @@ export default {
 				this.drizzleInstance.contracts.IPFSImageStore.methods.set.cacheSend(ipfsResponse.cid.string, newImage.author, newImage.description);
 				return this.$router.push({ name: 'Home' })
 			}
-			console.log("Image already exists")
-			// Nakon dodavanja slike, otiđi na Home
-			
+
+			this.imageExists = true;
 		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
+.imageExists{
+	color: red;
+	
+	text-align: center;
+	margin: .5rem 0 1rem 0;
+}
 .postImage {
 	margin-top: 5rem;
 	padding: 0 5rem;
-
-	& > * {
-		margin-bottom: 2rem;
-	}
 }
 .inputText {
 	height: 5rem;
@@ -152,6 +158,9 @@ export default {
 	.ButtonDesign2S {
 		width: 25%;
 	}
+}
+.buttonContainer{
+	margin: 1.5rem 0;
 }
 @media only screen and (max-width: 600px) {
 	.postImage {

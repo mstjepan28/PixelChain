@@ -5,16 +5,9 @@
 	<HeaderCarousel :info="headerInfo"/>
 	
 	<div class="section">
-		<hr class="PurpleLine"/><InfoBox :info="{title:'Artists', text:placeholderText}"/><hr class="PurpleLine"/>
-		<div v-if="users" class="sectionContent">
-			<UserCard :key="card.id" :info="card" v-for="card in users.slice(0,3)"/>
-		</div>
-	</div>
-	
-	<div class="section">
 		<hr class="PurpleLine"/><InfoBox :info="{title:'Images', text:placeholderText}"/><hr class="PurpleLine"/>
 		
-		<div v-if="images" class="sectionContent">
+		<div v-if="images.length" class="sectionContent">
 			<img class="previewImage" @click="openPopup(img)" :key="img + '' + Math.random()" :src="img.imgSrc" v-for="img in images"/>
 		</div>
 		<div v-else-if="isLoading" class="loadingImages">
@@ -32,7 +25,7 @@
 
 import HeaderCarousel from '../components/HeaderCarousel.vue';
 import InfoBox from '@/components/InfoBox';
-import UserCard from '@/components/UserCard';
+
 import ImageModal from '@/components/imageModal';
 
 import store from '@/store.js';
@@ -42,7 +35,6 @@ export default {
 	components: {
 		HeaderCarousel,
 		InfoBox,
-		UserCard,
 		ImageModal
 	},
 	data(){
@@ -82,12 +74,8 @@ export default {
 		// Setting data ---------------------------------------------------------------------------
 		// Dohvati 3 slike iz store.images te loading postavi na false
 		setImages(){
-			this.images = store.images.slice(0,3);
-			console.log(this.images)
+			this.images = store.images;
 			this.isLoading = false;
-		},
-		setUsers(){
-			this.users = store.users.slice(0,4);
 		},
 
 		// Getting data ---------------------------------------------------------------------------
@@ -115,7 +103,7 @@ export default {
 			console.log(result);
 			// Return array promis-a koji ce se resolvati u slike
 			return result.map(async url => {
-				if(url.cid === "CopyRight"){
+				if(url.cid === "CopyRight" || url.cid === ""){
 					return null;
 				}else{
 					let img = await fetch(`http://127.0.0.1:8080/ipfs/${url.cid}/`); // Fetch sliku sa IPFS-a
@@ -125,18 +113,15 @@ export default {
 		},
 
 		async getImages(){
-			// Provjeri ukoliko slike vec postoje u store.images. Ako postoje dohvacaju se iz store.images.
-			if(store.images.length){
-				this.setImages();
-				return;
-			}
-
+			store.images = [];
+			
 			// Ako je store.images prazan, dohvati slike sa IPFS-a. Prije dohvacanja slika provjeri i pricekaj
 			// inicijalizaciju drizzle-a.
 			await this.checkState();
 
 			// Dohvati slike sa IPFS-a		
 			let promises = await this.fetchImages();
+			console.log(promises)
 
 			// Ukoliko ne postoji niti jedna slika, zavrsi funkciju i okoncaj loading
 			if(!promises.length){
@@ -150,10 +135,11 @@ export default {
 					//const resolvedImg = JSON.parse(promiseResult);
 
 					// Dodaj CID na sliku
-					//if()
-					const img = Object.assign({imgSrc: promiseResult}, this.cidList[index]);
+					if(promiseResult != null){
+						const img = Object.assign({imgSrc: promiseResult}, this.cidList[index]);
 
-					store.images.push(img)
+						store.images.push(img)
+					}	
 				});
 				this.setImages();
 			});
@@ -181,6 +167,7 @@ export default {
 	.sectionContent{
 		display: flex;
 		flex-direction: row;
+		flex-wrap: wrap;
 		justify-content: center;
 	}
 }
@@ -198,9 +185,6 @@ export default {
 }
 
 @media only screen and (max-width: 600px) {
-	.sectionContent{
-		flex-wrap: wrap;
-	}
 	.previewImage{
 		width: 90%;
 		max-height: 50%;

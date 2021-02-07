@@ -3,7 +3,7 @@
 	<LoginInfo/>
 	<UserDataModal :info="user" @addUserData="addUser"/>
 
-	<Navbar @openLoginInstructions="openLoginInstructions"/>
+	<Navbar @openLoginInstructions="openLoginInstructions" @openCurUser="openCurUser" />
 
 	<router-view/>
 
@@ -33,6 +33,9 @@ export default {
 		openLoginInstructions(){
 			$('#loginTutorial').modal('show');
 		},
+		openCurUser(){
+			$('#userModal').modal('show');
+		},
 		
 		async checkState(){
 			// Dohvati trenutno stanje inicijalizacije drizzle
@@ -61,25 +64,28 @@ export default {
 		//Funkcija koja postavlja podatke korisnika za prikaz u aplikaciji.
 		setUser(user){ 
 			const balance = (this.$store.getters['accounts/activeBalance'] / 1000000000000000000).toPrecision(6);
+			const account = this.$store.getters['accounts/activeAccount'];
 
 			// slučaj kada ne posotje podatci o korisniku onda se samo prikazuje hash računa i iznos na računu
-			if(!user){ 
-				const account = this.$store.getters['accounts/activeAccount'];
-				store.currentUser = { account, balance };
-			}
+			if(!user) this.user = { account, balance };
+			
 			// Slučaj kada postoje podatci o korisniku
 			else{
-				store.currentUser = {
+				this.user = {
 					name: user.name,
 					lastname: user.lastname,
 					username: user.username,
-					balance
+					balance,
+					account,
 				}
 			}
-			store.userHasData = store.currentUser.name? true: false;
 
+			store.currentUser = this.user;
+
+			const userHasData = this.user.name? true: false;
 			const randNumber = Math.round(Math.random() * 10) // Modal ima 50% sanse da se pojavi
-			if(!store.userHasData && randNumber >= 5) $('#userModal').modal('show');
+			
+			if(!userHasData && randNumber >= 5) $('#userModal').modal('show');
 		},
 
 		async addUser(user){
