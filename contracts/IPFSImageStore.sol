@@ -41,9 +41,20 @@ struct Report{
   }
 
   function addReport(string memory _original, string memory _reported, string memory _description) public {
-    reports.push(Report(reportId, _original, _reported, _description, block.timestamp, block.timestamp + 2592000, 1));
-    users[msg.sender].votedReports.push(reportId);
-    reportId++;
+    if(!reportExists(_original, _reported)){
+      reports.push(Report(reportId, _original, _reported, _description, block.timestamp, block.timestamp + 2592000, 1));
+      users[msg.sender].votedReports.push(reportId);
+      reportId++;
+    }
+  }
+  
+  function reportExists(string memory _original, string memory _reported) public view returns(bool){
+    for(uint i = 0; i < reportId; i++){
+      if(keccak256(bytes(reports[i].original_cid)) == keccak256(bytes(_original)) && keccak256(bytes(reports[i].reported_cid)) == keccak256(bytes(_reported))){
+        return true;
+      }
+    }
+    return false;
   }
   
   function getReports() public view returns(Report[] memory) {
